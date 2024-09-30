@@ -18,11 +18,11 @@
 }
 
 .explore-menu-list {
-    margin-right: 156px;
+    margin-right: 176px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 50px;
+    gap: 80px;
     text-align: center;
     overflow-x: scroll;
 }
@@ -47,7 +47,7 @@
 }
 
 .explore-menu hr {
-    margin-right: 156px;
+    margin-right: 176px;
     margin-bottom: 15px;
     height: 2px;
     background-color: #e2e2e2;
