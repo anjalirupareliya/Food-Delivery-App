@@ -54,13 +54,14 @@
 }
 
 .navbar-search-icon .dot {
+    font-size: 15px;
     position: absolute;
-    min-width: 10px;
-    min-height: 10px;
     background-color: tomato;
     border-radius: 5px;
     top: -8px;
-    right: -8px;
+    padding-left: 5px;
+    padding-right: 5px;
+    right: -10px;
 }
 
 .user-info {
