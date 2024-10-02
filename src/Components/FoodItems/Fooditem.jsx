@@ -1,21 +1,29 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Fooditem.css';
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../Context/Storecontext';
 
 const Fooditem = ({ id, name, price, description, image }) => {
     const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
-    const [showNotification, setShowNotification] = useState(false);
-    const [addedItemName, setAddedItemName] = useState('');
+    const [notifications, setNotifications] = useState([]);
 
     const handleAddToCart = (id, name) => {
         addToCart(id);
-        setAddedItemName(name);
-        setShowNotification(true);
-        setTimeout(() => {
-            setShowNotification(false);
-        }, 2000);
+        setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            `${name} added to cart!`,
+        ]);
     };
+
+    useEffect(() => {
+        if (notifications.length > 0) {
+            const timer = setTimeout(() => {
+                setNotifications((prevNotifications) => prevNotifications.slice(1));
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [notifications]);
 
     return (
         <div className='food-item'>
@@ -40,7 +48,13 @@ const Fooditem = ({ id, name, price, description, image }) => {
                 <p className='food-item-price'>${price}</p>
             </div>
 
-            {showNotification && <div className='notification'>{addedItemName} added to cart!</div>}
+            <div className='notification-container'>
+                {notifications.map((notification, index) => (
+                    <div key={index} className='notification'>
+                        {notification}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
