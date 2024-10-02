@@ -10,9 +10,15 @@ const Footer = () => {
                     <img src={assets.logo} alt='' />
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique numquam iste aliquid facilis voluptas reprehenderit atque laborum totam ullam quis ab repellat ipsam, optio praesentium, soluta doloremque? Libero, impedit nisi.</p>
                     <div className='footer-social-icons'>
-                        <img src={assets.facebook_icon} alt='' />
-                        <img src={assets.twitter_icon} alt='' />
-                        <img src={assets.linkedin_icon} alt='' />
+                        <a href='https://www.facebook.com' target='_blank' rel='noopener noreferrer'>
+                            <img src={assets.facebook_icon} alt='Facebook' />
+                        </a>
+                        <a href='https://www.twitter.com' target='_blank' rel='noopener noreferrer'>
+                            <img src={assets.twitter_icon} alt='Twitter' />
+                        </a>
+                        <a href='https://www.linkedin.com' target='_blank' rel='noopener noreferrer'>
+                            <img src={assets.linkedin_icon} alt='LinkedIn' />
+                        </a>
                     </div>
                 </div>
                 <div className='footer-content-center'>

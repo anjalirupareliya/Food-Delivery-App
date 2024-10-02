@@ -100,3 +100,42 @@
     color: white;
     border-radius: 4px;
 }
+
+.check-icon {
+    color: green;
+}
+
+.close-icon {
+    color: red;
+}
+
+.promo-message.success {
+    color: green;
+}
+
+.promo-message.error {
+    color: red;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+}
+
+.minus-btn,
+.plus-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.minus-btn:hover,
+.plus-btn:hover {
+    background-color: #ddd;
+}
+
+.quantity-control span {
+    margin: 0 10px;
+    font-size: 16px;
+}

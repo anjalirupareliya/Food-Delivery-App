@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import './PlaceOrder.css'
 import { StoreContext } from '../../Components/Context/Storecontext'
+import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
 
   const { getTotalCartAmount } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   return (
     <form className='place-order'>
@@ -13,23 +15,23 @@ const PlaceOrder = () => {
         <p className='title'>Delivery Information</p>
 
         <div className='multi-fields'>
-          <input type='text' placeholder='First name' />
-          <input type='text' placeholder='Last name' />
+          <input type='text' placeholder='First name' required />
+          <input type='text' placeholder='Last name' required />
         </div>
 
-        <input type='email' placeholder='Email Address' />
-        <input type='text' placeholder='street' />
+        <input type='email' placeholder='Email Address' required />
+        <input type='text' placeholder='street' required />
         <div className='multi-fields'>
-          <input type='text' placeholder='city' />
-          <input type='text' placeholder='state' />
+          <input type='text' placeholder='city' required />
+          <input type='text' placeholder='state' required />
         </div>
 
         <div className='multi-fields'>
-          <input type='text' placeholder='Zip code' />
-          <input type='text' placeholder='Country' />
+          <input type='text' placeholder='Zip code' required />
+          <input type='text' placeholder='Country' required />
         </div>
 
-        <input type='text' placeholder='Phone' />
+        <input type='text' placeholder='Phone' required />
       </div>
 
       <div className='place-order-right'>
@@ -47,7 +49,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button>PROCEED TO PAYMENT</button>
+          <button onClick={() => navigate('/confirm')}>PROCEED TO PAYMENT</button>
 
         </div>
       </div>

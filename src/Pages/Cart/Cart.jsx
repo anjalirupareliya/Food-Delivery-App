@@ -1,13 +1,35 @@
-import React, { useContext } from 'react'
-import './Cart.css'
-import { StoreContext } from '../../Components/Context/Storecontext'
+import React, { useContext, useState } from 'react';
+import './Cart.css';
+import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
 const Cart = () => {
-  const { food_list, cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
-
+  const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
+
+  const [promoCode, setPromoCode] = useState('');
+  const [promoMessage, setPromoMessage] = useState('');
+  const [isPromoValid, setIsPromoValid] = useState(false);
+
+  const validPromoCodes = ['SAVE10', 'FREESHIP'];
+
+  const handlePromoSubmit = () => {
+    if (!promoCode.trim()) {
+      setPromoMessage('');
+      setIsPromoValid(false);
+      return;
+    }
+
+    if (validPromoCodes.includes(promoCode)) {
+      setPromoMessage('Promo code applied successfully!');
+      setIsPromoValid(true);
+    } else {
+      setPromoMessage('Promo code is not available.');
+      setIsPromoValid(false);
+    }
+  };
+
   return (
     <div className='cart'>
       <div className='cart-items'>
@@ -21,22 +43,27 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item, index) => {
+        {food_list.map((item) => {
           if (cartItems[item._id] > 0) {
             return (
-              <div>
+              <div key={item._id}>
                 <div className='cart-items-title cart-items-item'>
                   <img src={item.image} alt='' />
                   <p>{item.name}</p>
                   <p>${item.price}</p>
-                  <p>{cartItems[item._id]}</p>
+                  <div className="quantity-control">
+                    <button onClick={() => removeFromCart(item._id)} className='minus-btn'>-</button>
+                    <span>{cartItems[item._id]}</span>
+                    <button onClick={() => addToCart(item._id)} className='plus-btn'>+</button>
+                  </div>
                   <p>${item.price * cartItems[item._id]}</p>
                   <AiFillDelete onClick={() => removeFromCart(item._id)} className='cross'></AiFillDelete>
                 </div>
                 <hr />
               </div>
-            )
+            );
           }
+          return null;
         })}
       </div>
       <div className='cart-bottom'>
@@ -58,16 +85,25 @@ const Cart = () => {
         </div>
         <div className='cart-promocode'>
           <div>
-            <p>If you have a promo code, Enter it here</p>
+            <p>If you have a promo code, enter it here</p>
             <div className='cart-promocode-input'>
-              <input type='text' placeholder='promo code' />
-              <button>Submit</button>
+              <input type='text' placeholder='promo code' value={promoCode} onChange={(e) => setPromoCode(e.target.value)} />
+              <button onClick={handlePromoSubmit}>Submit</button>
             </div>
+            {promoMessage && (
+              <p className={`promo-message ${isPromoValid ? 'success' : 'error'}`}>
+                {isPromoValid ? (
+                  <> <AiFillCheckCircle className='check-icon' /> {promoMessage} </>
+                ) : (
+                  <> <AiFillCloseCircle className='close-icon' /> {promoMessage} </>
+                )}
+              </p>
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;

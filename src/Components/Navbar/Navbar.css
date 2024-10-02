@@ -63,26 +63,16 @@
     right: -8px;
 }
 
-@media (max-width:750px) {
-    .navbar .logo {
-        width: 120px;
-    }
+.user-info {
+    display: flex;
+    align-items: center;
+    padding-right: 2px;
+}
 
-    .navbar-menu {
-        gap: 15px;
-        font-size: 16px;
-    }
+.user-info p {
+    padding-right: 20px;
+}
 
-    .navbar-right {
-        gap: 20px;
-    }
-
-    .navbar-right img {
-        width: 20px;
-    }
-
-    .navbar-right button {
-        padding: 7px 20px;
-        font-size: 15px;
-    }
+.user-icon {
+    margin-right: 5px;
 }
