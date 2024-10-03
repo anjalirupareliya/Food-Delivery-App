@@ -57,7 +57,7 @@ const Cart = () => {
                     <button onClick={() => addToCart(item._id)} className='plus-btn'>+</button>
                   </div>
                   <p>${item.price * cartItems[item._id]}</p>
-                  <AiFillDelete onClick={() => removeFromCart(item._id)} className='cross'></AiFillDelete>
+                  <AiFillDelete onClick={() => removeFromCart(item._id, true)} className='cross' />
                 </div>
                 <hr />
               </div>

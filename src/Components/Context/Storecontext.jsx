@@ -21,19 +21,21 @@ const StoreContextProvider = (props) => {
         });
     };
 
-    const removeFromCart = (itemId) => {
+    const removeFromCart = (itemId, removeAll = false) => {
         setCartItems((prev) => {
-            if (prev[itemId] > 1) {
-                const newCartItems = { ...prev, [itemId]: prev[itemId] - 1 };
-                localStorage.setItem("cartItems", JSON.stringify(newCartItems));
-                return newCartItems;
+            if (removeAll || prev[itemId] <= 1) {
+                const updatedCart = { ...prev };
+                delete updatedCart[itemId];
+                localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+                return updatedCart;
             } else {
-                const { [itemId]: _, ...rest } = prev;
-                localStorage.setItem("cartItems", JSON.stringify(rest));
-                return rest;
+                const updatedCart = { ...prev, [itemId]: prev[itemId] - 1 };
+                localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+                return updatedCart;
             }
         });
     };
+
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;

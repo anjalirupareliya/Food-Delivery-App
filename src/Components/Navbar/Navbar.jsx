@@ -9,8 +9,9 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
   const [menu, setMenu] = useState('home');
   const { cartItems } = useContext(StoreContext);
 
-  const getTotalCartItems = () => {
-    return Object.values(cartItems).reduce((acc, itemCount) => acc + itemCount, 0);
+  const getCartItems = () => {
+    const uniqueItem = Object.keys(cartItems).filter(id => cartItems[id] > 0);
+    return uniqueItem.length;
   };
 
   return (
@@ -26,8 +27,8 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
         <img src={assets.search_icon} alt='' />
         <div className='navbar-search-icon'>
           <Link to='/cart'><img src={assets.basket_icon} alt='' /></Link>
-          <div className={getTotalCartItems() === 0 ? "" : "dot"}>
-            {getTotalCartItems() > 0 && <span>{getTotalCartItems()}</span>}
+          <div className={getCartItems() === 0 ? "" : "dot"}>
+            {getCartItems() > 0 && <span>{getCartItems()}</span>}
           </div>
         </div>
         {userName ? (
