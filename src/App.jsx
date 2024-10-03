@@ -31,9 +31,9 @@ const App = () => {
         <Navbar setShowLogin={setShowLogin} userName={userName} onLogout={handleLogout} />
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/Cart' element={<Cart />} />
+          <Route path='/cart' element={<Cart userName={userName} setShowLogin={setShowLogin} />} />
           <Route path='/order' element={<PlaceOrder />} />
-          <Route path="/confirm" element={<Order />} />
+          <Route path='/confirm' element={<Order />} />
         </Routes>
       </div>
       <Footer />
@@ -41,4 +41,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

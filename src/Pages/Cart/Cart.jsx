@@ -4,7 +4,7 @@ import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
 import { AiFillDelete, AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
-const Cart = () => {
+const Cart = ({ userName, setShowLogin }) => {
   const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -28,6 +28,14 @@ const Cart = () => {
       setPromoMessage('Promo code is not available.');
       setIsPromoValid(false);
     }
+  };
+
+  const handleCheckout = () => {
+    if (!userName) {
+      setShowLogin(true);
+      return;
+    }
+    navigate('/order');
   };
 
   return (
@@ -81,7 +89,7 @@ const Cart = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button onClick={() => navigate('/order')}>PROCEED TO CHECKOUT</button>
+          <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
         <div className='cart-promocode'>
           <div>

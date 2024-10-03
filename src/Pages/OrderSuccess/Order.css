@@ -40,28 +40,6 @@
     position: relative;
 }
 
-.icon::before,
-.icon::after {
-    content: '';
-    position: absolute;
-    background-color: #ff7b42;
-    border-radius: 50%;
-    width: 8px;
-    height: 8px;
-}
-
-.icon::before {
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.icon::after {
-    bottom: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
 h2 {
     font-size: 24px;
     font-weight: 600;
