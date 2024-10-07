@@ -7,35 +7,88 @@ const PlaceOrder = () => {
   const { getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
 
+  const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
+  const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
+  const cities = {
+    "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik"],
+    "Karnataka": ["Bengaluru", "Mangalore", "Mysuru"],
+    "Gujarat": ["Surat", "Bhavnagar", "Ahemdabad", "Rajkot", "Vadodra", "Gandhinagar", "Anand", "Junagadh", "Morbi"],
+    "Delhi": ["Chandni Chowk", "Babarpur", "New Delhi", "East Delhi"],
+    "Punjab": ["Lahore", "Ludhiana", "Chandigarh", "Amritsar", "Jalandhar", "Ajitgarh"],
+    "Tamil Nadu": ["Chennai", "Madurai", "Tiruppur", "Salem"],
+    "Goa": ["Panaji", "Madgaon", "Marmagao"],
+    "Bihar": ["Patna", "Nalanda", "Muzaffarpur", "Hajipur", "Bhagalpur"],
+    "Sikkim": ["Gangtok", "Mangan", "Gyalshing", "Soreng", "Namchi"],
+    "Rajasthan": ["Jaipur", "Ajmer", "Jaisalmer", "Udaipur", "Jodhpur", "Bikaner", "Alwar", "Kota"],
+    'Kerela': ["Thiruvananthapuram", "Kannur", "Kochi", "Varkala", "Kannur"],
+  }
+
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    street: '',
     city: '',
+    street: '',
     state: '',
     zip: '',
     country: '',
     phone: '',
   });
 
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    });
+
+    setErrors({
+      ...errors,
+      [name]: '',
     });
   };
 
   const validateForm = () => {
-    const { firstName, lastName, email, street, city, state, zip, country, phone } = formData;
-    if (!firstName || !lastName || !email || !street || !city || !state || !zip || !country || !phone) {
-      setError('Please fill in all the fields.');
-      return false;
+    const { firstName, lastName, email, city, street, state, zip, country } = formData;
+    let newErrors = {};
+
+    if (!firstName) {
+      newErrors.firstName = 'First name is required'
+    };
+
+    if (!lastName) {
+      newErrors.lastName = 'Last name is required'
+
+    };
+
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is not valid';
     }
-    setError('');
-    return true;
+
+    if (!street) {
+      newErrors.street = 'Street is required'
+    };
+    if (!city) {
+      newErrors.city = 'please select a city'
+    };
+    if (!state) {
+      newErrors.state = 'please select a State'
+    };
+    if (!zip) {
+      newErrors.zip = 'Zip code is required'
+    };
+    if (!country) {
+      newErrors.country = 'please select a country'
+    };
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
@@ -51,24 +104,69 @@ const PlaceOrder = () => {
         <p className='title'>Delivery Information</p>
 
         <div className='multi-fields'>
-          <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleChange} required />
-          <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleChange} required />
+          <div className='form-group w100'>
+            <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleChange} />
+            {errors.firstName && <span className='error-message'>{errors.firstName}</span>}
+          </div>
+
+          <div className='form-group w100'>
+            <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleChange} />
+            {errors.lastName && <span className='error-message'>{errors.lastName}</span>}
+          </div>
         </div>
 
-        <input type='email' name='email' placeholder='Email Address' value={formData.email} onChange={handleChange} required />
-        <input type='text' name='street' placeholder='Street' value={formData.street} onChange={handleChange} required />
+        <div className='form-group'>
+          <input className='gk' type='email' name='email' placeholder='Email Address' value={formData.email} onChange={handleChange} />
+          {errors.email && <span className='error-message'>{errors.email}</span>}
+        </div>
+
+        <div className='form-group'>
+          <input className='gk' type='text' name='street' placeholder='Enter Your Street' value={formData.street} onChange={handleChange} />
+          {errors.street && <span className='error-message'>{errors.street}</span>}
+        </div>
+
+        <div className='multi-fields '>
+          <div className='form-group w100'>
+            <select className='gk' name='city' value={formData.city} onChange={handleChange}>
+              <option value=''>Select City</option>
+              {formData.state && cities[formData.state].map((city, index) => (
+                <option key={index} value={city}>{city}</option>
+              ))}
+            </select>
+            {errors.city && <span className='error-message'>{errors.city}</span>}
+          </div>
+          <div className='form-group w100'>
+            <select className='gk' name='state' value={formData.state} onChange={handleChange}>
+              <option value=''>Select State</option>
+              {states.map((state, index) => (
+                <option key={index} value={state}>{state}</option>
+              ))}
+            </select>
+            {errors.state && <span className='error-message'>{errors.state}</span>}
+          </div>
+        </div>
 
         <div className='multi-fields'>
-          <input type='text' name='city' placeholder='City' value={formData.city} onChange={handleChange} required />
-          <input type='text' name='state' placeholder='State' value={formData.state} onChange={handleChange} required />
+          <div className='form-group w100'>
+            <input className='gk' type='text' name='zip' placeholder='Zip code' value={formData.zip} onChange={handleChange} />
+            {errors.zip && <span className='error-message'>{errors.zip}</span>}
+          </div>
+
+          <div className='form-group w100'>
+            <select className='gk' name='country' value={formData.country} onChange={handleChange}>
+              <option value=''>Select Country</option>
+              {countrys.map((country, index) => (
+                <option key={index} value={country}>{country}</option>
+              ))}
+            </select>
+            {errors.country && <span className='error-message'>{errors.country}</span>}
+          </div>
         </div>
 
-        <div className='multi-fields'>
-          <input type='text' name='zip' placeholder='Zip code' value={formData.zip} onChange={handleChange} required />
-          <input type='text' name='country' placeholder='Country' value={formData.country} onChange={handleChange} required />
+        <div className='form-group'>
+          <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleChange} />
+          {errors.phone && <span className='error-message'>{errors.phone}</span>}
         </div>
-
-        <input type='text' name='phone' placeholder='Phone' value={formData.phone} onChange={handleChange} required />
       </div>
 
       <div className='place-order-right'>
@@ -90,9 +188,7 @@ const PlaceOrder = () => {
         </div>
       </div>
 
-      {/* Error message if form is incomplete */}
-      {error && <p className='error-message'>{error}</p>}
-    </form>
+    </form >
   );
 };
 

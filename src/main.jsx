@@ -10,5 +10,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <StoreContextProvider>
       <App />
     </StoreContextProvider>
-  </BrowserRouter>,
+  </BrowserRouter>
 )

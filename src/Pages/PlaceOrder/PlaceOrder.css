@@ -1,3 +1,7 @@
+.w100 {
+    width: 100%;
+}
+
 .place-order {
     margin-left: 100px;
     margin-right: 176px;
@@ -5,7 +9,18 @@
     align-items: start;
     justify-content: space-between;
     gap: 50px;
-    margin-top: 100px;
+    margin-top: 170px;
+    padding: 20px;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 0;
+    /* Remove bottom margin to ensure no space between input and error */
 }
 
 .place-order-left {
@@ -20,7 +35,8 @@
 }
 
 .place-order-left input {
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+    /* Adjust margin for input fields */
     width: 100%;
     padding: 19px;
     border: 1px solid #c5c5c5;
@@ -31,6 +47,7 @@
 .place-order-left .multi-fields {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
 }
 
 .place-order-right {
@@ -44,6 +61,30 @@
 
 .error-message {
     color: red;
-    margin-top: 10px;
     font-size: 14px;
+    margin-top: 0;
+}
+
+input:invalid,
+input.error {
+    border-color: red;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.cart-total {
+    margin-top: 20px;
+}
+
+.gk {
+    margin-top: 30px;
 }

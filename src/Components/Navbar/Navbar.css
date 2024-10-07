@@ -10,6 +10,7 @@
     z-index: 1000;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0;
 }
 
 .navbar .logo {
@@ -79,12 +80,10 @@
 
 .user-info p {
     padding-right: 20px;
+    font-size: large;
+    padding-bottom: 4px;
 }
 
 .user-icon {
     margin-right: 5px;
-}
-
-body {
-    padding-top: 80px;
 }
