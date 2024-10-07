@@ -3,6 +3,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .navbar .logo {
@@ -58,11 +65,10 @@
     position: absolute;
     background-color: tomato;
     color: white;
-    border-radius: 5px;
     top: -8px;
-    padding-left: 2.5px;
-    padding-right: 2.5px;
     right: -10px;
+    padding: 3px 7px;
+    border-radius: 50%;
 }
 
 .user-info {
@@ -77,4 +83,8 @@
 
 .user-icon {
     margin-right: 5px;
+}
+
+body {
+    padding-top: 80px;
 }

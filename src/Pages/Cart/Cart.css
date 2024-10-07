@@ -21,6 +21,10 @@
     color: black;
 }
 
+.cart-items-item:hover {
+    background-color: #0000000d;
+}
+
 .cart-items-item img {
     width: 50px;
 }

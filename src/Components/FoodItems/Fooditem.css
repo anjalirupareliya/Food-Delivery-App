@@ -86,7 +86,7 @@
 .notification {
     display: flex;
     align-items: center;
-    background-color: #4caf50;
+    background-color: coral;
     color: white;
     padding: 10px;
     border-radius: 5px;
