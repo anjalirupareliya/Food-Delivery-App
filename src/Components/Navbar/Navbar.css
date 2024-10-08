@@ -11,6 +11,15 @@
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin: 0;
+    transition: top 0.3s ease;
+}
+
+.navbar.hide {
+    top: -80px;
+}
+
+.navbar.show {
+    top: 0;
 }
 
 .navbar .logo {

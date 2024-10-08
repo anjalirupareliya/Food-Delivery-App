@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
@@ -38,22 +38,33 @@ const PlaceOrder = () => {
 
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      const [firstName, lastName] = storedUser.name.split(' ');
+      setFormData({
+        ...formData,
+        firstName: firstName || '',
+        lastName: lastName || 'none',
+        email: storedUser.email || ''
+      });
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setFormData({
-      ...formData,
-      [name]: value,
+      ...formData, [name]: value,
     });
 
     setErrors({
-      ...errors,
-      [name]: '',
+      ...errors, [name]: '',
     });
   };
 
   const validateForm = () => {
-    const { firstName, lastName, email, city, street, state, zip, country } = formData;
+    const { firstName, lastName, email, city, street, state, zip, country, phone } = formData;
     let newErrors = {};
 
     if (!firstName) {
@@ -86,6 +97,10 @@ const PlaceOrder = () => {
     if (!country) {
       newErrors.country = 'please select a country'
     };
+    if (!phone) {
+      newErrors.phone = 'please Enter Your Number'
+    };
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,11 +140,11 @@ const PlaceOrder = () => {
           {errors.street && <span className='error-message'>{errors.street}</span>}
         </div>
 
-        <div className='multi-fields '>
+        <div className='multi-fields'>
           <div className='form-group w100'>
             <select className='gk' name='city' value={formData.city} onChange={handleChange}>
               <option value=''>Select City</option>
-              {formData.state && cities[formData.state].map((city, index) => (
+              {formData.state && cities[formData.state]?.map((city, index) => (
                 <option key={index} value={city}>{city}</option>
               ))}
             </select>
@@ -148,7 +163,7 @@ const PlaceOrder = () => {
 
         <div className='multi-fields'>
           <div className='form-group w100'>
-            <input className='gk' type='text' name='zip' placeholder='Zip code' value={formData.zip} onChange={handleChange} />
+            <input className='gk' type='text' name='zip' placeholder='Zip code' pattern='/^\d{5}(?:[-\s]\d{4})?$/' value={formData.zip} onChange={handleChange} />
             {errors.zip && <span className='error-message'>{errors.zip}</span>}
           </div>
 
@@ -187,8 +202,7 @@ const PlaceOrder = () => {
           <button type='submit'>PROCEED TO PAYMENT</button>
         </div>
       </div>
-
-    </form >
+    </form>
   );
 };
 

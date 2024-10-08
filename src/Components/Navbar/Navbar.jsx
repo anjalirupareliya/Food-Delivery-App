@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Navbar.css';
 import { assets } from '../../assets/assets';
 import { Link } from 'react-router-dom';
@@ -8,14 +8,35 @@ import { BiSolidUser } from "react-icons/bi";
 const Navbar = ({ setShowLogin, userName, onLogout }) => {
   const [menu, setMenu] = useState('home');
   const { cartItems } = useContext(StoreContext);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const getCartItems = () => {
     const uniqueItem = Object.keys(cartItems).filter(id => cartItems[id] > 0);
     return uniqueItem.length;
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < window.innerHeight * 0.1) {
+        setShowNavbar(true);
+      } else if (currentScrollY > lastScrollY) {
+        setShowNavbar(false);
+      } else if (currentScrollY < lastScrollY) {
+        setShowNavbar(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <div className='navbar'>
+    <div className={`navbar ${showNavbar ? 'show' : 'hide'}`}>
       <Link to='/'><img src={assets.logo} alt='' className='logo' /></Link>
       <ul className="navbar-menu">
         <Link to='/' onClick={() => setMenu('home')} className={menu === 'home' ? 'active' : ''}>home</Link>
