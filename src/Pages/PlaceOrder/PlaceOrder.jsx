@@ -163,7 +163,7 @@ const PlaceOrder = () => {
 
         <div className='multi-fields'>
           <div className='form-group w100'>
-            <input className='gk' type='text' name='zip' placeholder='Zip code' pattern='/^\d{5}(?:[-\s]\d{4})?$/' value={formData.zip} onChange={handleChange} />
+            <input className='gk' type='text' name='zip' placeholder='Zip code' value={formData.zip} onChange={handleChange} />
             {errors.zip && <span className='error-message'>{errors.zip}</span>}
           </div>
 
@@ -194,6 +194,10 @@ const PlaceOrder = () => {
           <div className='cart-total-details'>
             <p>Delivery Fee</p>
             <p>${getTotalCartAmount() === 0 ? 0 : 5}</p>
+          </div>
+          <div className='cart-total-details'>
+            <p>Discount</p>
+            <p>${0}</p>
           </div>
           <div className='cart-total-details'>
             <p>Total</p>

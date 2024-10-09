@@ -17,12 +17,9 @@ const Exploremenu = ({ category, setCategory }) => {
         <div className='explore-menu' id='explore-menu'>
             <h1>Explore our menu</h1>
             <p className='explore-menu-text'>
-                Choose from a diverse menu featuring a delectable array of dishes. Our mission is to satisfy your cravings and elevate your dining experience.
-            </p>
+                Choose from a diverse menu featuring a delectable array of dishes. Our mission is to satisfy your cravings and elevate your dining experience.</p>
             <div className='explore-menu-container'>
-                <button className='scroll-button left' onClick={scrollLeft}>
-                    &#8249;
-                </button>
+                <button className='scroll-button left' onClick={scrollLeft}>&#8249;</button>
 
                 <div className='explore-menu-list' ref={menuListRef}>
                     {menu_list.map((item, index) => (
@@ -33,7 +30,7 @@ const Exploremenu = ({ category, setCategory }) => {
                         </div>
                     ))}
                 </div>
-                <button className='scroll-button right' onClick={scrollRight}> &#8250; </button>
+                <button className='scroll-button right' onClick={scrollRight}>&#8250;</button>
             </div>
             <hr />
         </div>

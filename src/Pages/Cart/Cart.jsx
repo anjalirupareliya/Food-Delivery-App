@@ -86,6 +86,10 @@ const Cart = ({ userName, setShowLogin }) => {
             <p>${getTotalCartAmount() === 0 ? 0 : 5}</p>
           </div>
           <div className='cart-total-details'>
+            <p>Discount</p>
+            <p>${0}</p>
+          </div>
+          <div className='cart-total-details'>
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
