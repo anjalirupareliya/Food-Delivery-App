@@ -6,11 +6,11 @@ const Exploremenu = ({ category, setCategory }) => {
     const menuListRef = useRef(null);
 
     const scrollRight = () => {
-        menuListRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+        menuListRef.current.scroll({ left: 200, behavior: 'smooth' });
     };
 
     const scrollLeft = () => {
-        menuListRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+        menuListRef.current.scroll({ left: -200, behavior: 'smooth' });
     };
 
     return (
@@ -23,8 +23,7 @@ const Exploremenu = ({ category, setCategory }) => {
 
                 <div className='explore-menu-list' ref={menuListRef}>
                     {menu_list.map((item, index) => (
-                        <div
-                            onClick={() => setCategory(prev => prev === item.menu_name ? 'All' : item.menu_name)} key={index} className='explore-menu-list-item'>
+                        <div onClick={() => setCategory(prev => prev === item.menu_name ? 'All' : item.menu_name)} key={index} className='explore-menu-list-item'>
                             <img className={category === item.menu_name ? 'active' : ''} src={item.menu_image} alt={item.menu_name} />
                             <p>{item.menu_name}</p>
                         </div>
