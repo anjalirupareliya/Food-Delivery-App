@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
-import { AiFillDelete, AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
 const Cart = ({ userName, setShowLogin }) => {
   const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
