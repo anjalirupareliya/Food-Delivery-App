@@ -105,22 +105,6 @@
     border-radius: 4px;
 }
 
-.check-icon {
-    color: green;
-}
-
-.close-icon {
-    color: red;
-}
-
-.promo-message.success {
-    color: green;
-}
-
-.promo-message.error {
-    color: red;
-}
-
 .quantity-control {
     display: flex;
     align-items: center;

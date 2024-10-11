@@ -8,28 +8,6 @@ const Cart = ({ userName, setShowLogin }) => {
   const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
 
-  const [promoCode, setPromoCode] = useState('');
-  const [promoMessage, setPromoMessage] = useState('');
-  const [isPromoValid, setIsPromoValid] = useState(false);
-
-  const validPromoCodes = ['SAVE10', 'FREESHIP'];
-
-  const handlePromoSubmit = () => {
-    if (!promoCode.trim()) {
-      setPromoMessage('');
-      setIsPromoValid(false);
-      return;
-    }
-
-    if (validPromoCodes.includes(promoCode)) {
-      setPromoMessage('Promo code applied successfully!');
-      setIsPromoValid(true);
-    } else {
-      setPromoMessage('Promo code is not available.');
-      setIsPromoValid(false);
-    }
-  };
-
   const handleCheckout = () => {
     if (!userName) {
       setShowLogin(true);
@@ -99,18 +77,9 @@ const Cart = ({ userName, setShowLogin }) => {
           <div>
             <p>If you have a promo code, enter it here</p>
             <div className='cart-promocode-input'>
-              <input type='text' placeholder='promo code' value={promoCode} onChange={(e) => setPromoCode(e.target.value)} />
-              <button onClick={handlePromoSubmit}>Submit</button>
+              <input type='text' placeholder='promo code' />
+              <button>Submit</button>
             </div>
-            {promoMessage && (
-              <p className={`promo-message ${isPromoValid ? 'success' : 'error'}`}>
-                {isPromoValid ? (
-                  <> <AiFillCheckCircle className='check-icon' /> {promoMessage} </>
-                ) : (
-                  <> <AiFillCloseCircle className='close-icon' /> {promoMessage} </>
-                )}
-              </p>
-            )}
           </div>
         </div>
       </div>
