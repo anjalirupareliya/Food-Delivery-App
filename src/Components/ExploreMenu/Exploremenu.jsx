@@ -1,9 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './Exploremenu.css';
-import { menu_list } from '../../assets/assets';
+import axios from 'axios';
+import { API_BASE_URL, BASE_URL } from "../../constants/apiconstants"
+// import { menu_list } from '../../assets/assets';
 
 const Exploremenu = ({ category, setCategory }) => {
     const menuListRef = useRef(null);
+    const [menu_list, setMenuList] = useState([]);
+
+    useEffect(() => {
+        axios.get(API_BASE_URL + '/category')
+            .then((res) => {
+                setMenuList(res.data);
+            })
+    }, []);
+
 
     const scrollRight = () => {
         menuListRef.current.scroll({ left: 200, behavior: 'smooth' });
@@ -24,7 +35,7 @@ const Exploremenu = ({ category, setCategory }) => {
                 <div className='explore-menu-list' ref={menuListRef}>
                     {menu_list.map((item, index) => (
                         <div onClick={() => setCategory(prev => prev === item.menu_name ? 'All' : item.menu_name)} key={index} className='explore-menu-list-item'>
-                            <img className={category === item.menu_name ? 'active' : ''} src={item.menu_image} alt={item.menu_name} />
+                            <img className={category === item.menu_name ? 'active' : ''} src={BASE_URL + item.menu_image} alt={item.menu_name} />
                             <p>{item.menu_name}</p>
                         </div>
                     ))}
