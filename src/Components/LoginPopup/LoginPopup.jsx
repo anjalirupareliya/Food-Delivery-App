@@ -3,32 +3,76 @@ import './LoginPopup.css';
 import { assets } from '../../assets/assets';
 
 const LoginPopup = ({ setShowLogin, setUserName }) => {
-    const [currState, setCurrState] = useState('Sign Up');
+    const [currState, setCurrState] = useState('Login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [nameError, setNameError] = useState('');
+
+    const validateEmail = () => {
+        if (!email) {
+            setEmailError('Email is required');
+            return false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            setEmailError('Email is not valid');
+            return false;
+        }
+        setEmailError('');
+        return true;
+    };
+
+    const validatePassword = () => {
+        if (!password) {
+            setPasswordError('Password is required');
+            return false;
+        } else if (password.length < 6) {
+            setPasswordError('Password must be at least 6 characters long');
+            return false;
+        }
+        setPasswordError('');
+        return true;
+    };
+
+    const validateName = () => {
+        if (currState === 'Sign Up' && !name) {
+            setNameError('Name is required');
+            return false;
+        }
+        setNameError('');
+        return true;
+    };
+
     const handleLogin = (e) => {
         e.preventDefault();
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser && storedUser.email === email && storedUser.password === password) {
-            setUserName(storedUser.name);
-            setShowLogin(false);
-        } else {
-            alert('Invalid email or password');
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+
+        if (isEmailValid && isPasswordValid) {
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            if (storedUser && storedUser.email === email && storedUser.password === password) {
+                setUserName(storedUser.name);
+                setShowLogin(false);
+            } else {
+                setPasswordError('Invalid email or password');
+            }
         }
     };
 
     const handleSignUp = (e) => {
         e.preventDefault();
-        if (!name || !email || !password) {
-            alert('Please fill in all fields');
-            return;
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+        const isNameValid = validateName();
+
+        if (isEmailValid && isPasswordValid && isNameValid) {
+            const userData = { name, email, password };
+            localStorage.setItem('user', JSON.stringify(userData));
+            alert('Account created successfully!');
+            setCurrState('Login');
         }
-        const userData = { name, email, password };
-        localStorage.setItem('user', JSON.stringify(userData));
-        alert('Account created successfully! You can now log in.');
-        setCurrState('Login');
     };
 
     return (
@@ -40,14 +84,24 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
                 </div>
                 <div className='login-popup-inputs'>
                     {currState === 'Sign Up' && (
-                        <input type='text' placeholder='Your name' value={name} onChange={(e) => setName(e.target.value)} required />
+                        <>
+                            <input type='text' placeholder='Your name' value={name} onChange={(e) => setName(e.target.value)} onBlur={validateName} />
+                            {nameError && <p className="error-message">{nameError}</p>}
+                        </>
                     )}
-                    <input type='email' placeholder='Your email' value={email} onChange={(e) => setEmail(e.target.value)} required />
-                    <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+                    <input type='email' placeholder='Your email' value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
+                    {emailError && <p className="error-message">{emailError}</p>}
+
+                    <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} />
+                    {passwordError && <p className="error-message">{passwordError}</p>}
                 </div>
-                <button>{currState === 'Sign Up' ? 'Create Account' : 'Login'}</button>
+
+                <button type='submit'>
+                    {currState === 'Sign Up' ? 'Create Account' : 'Login'}
+                </button>
                 <div className='login-popup-condition'>
-                    <input type='checkbox' required />
+                    <input type='checkbox' />
                     <p>By continuing, I agree to the terms of use & privacy policy.</p>
                 </div>
                 {currState === "Login" ? (

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Exploremenu.css';
 import axios from 'axios';
-import { API_BASE_URL, BASE_URL } from "../../constants/apiconstants"
-// import { menu_list } from '../../assets/assets';
+import { API_BASE_URL } from "../../constants/apiconstants"
+import { menu_list } from '../../assets/assets';
 
 const Exploremenu = ({ category, setCategory }) => {
     const menuListRef = useRef(null);
@@ -11,7 +11,10 @@ const Exploremenu = ({ category, setCategory }) => {
     useEffect(() => {
         axios.get(API_BASE_URL + '/category')
             .then((res) => {
-                setMenuList(res.data);
+                // console.log(res.data);
+                if (res.data.status) {
+                    setMenuList(res.data.data);
+                }
             })
     }, []);
 
@@ -34,8 +37,8 @@ const Exploremenu = ({ category, setCategory }) => {
 
                 <div className='explore-menu-list' ref={menuListRef}>
                     {menu_list.map((item, index) => (
-                        <div onClick={() => setCategory(prev => prev === item.menu_name ? 'All' : item.menu_name)} key={index} className='explore-menu-list-item'>
-                            <img className={category === item.menu_name ? 'active' : ''} src={BASE_URL + item.menu_image} alt={item.menu_name} />
+                        <div onClick={() => setCategory(prev => prev === item.id ? 'All' : item.id)} key={index} className='explore-menu-list-item'>
+                            <img className={category === item.id ? 'active' : ''} src={item.menu_image} alt={item.id} />
                             <p>{item.menu_name}</p>
                         </div>
                     ))}
