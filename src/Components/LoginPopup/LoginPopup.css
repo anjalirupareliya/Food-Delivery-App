@@ -39,7 +39,7 @@
 .login-popup-inputs {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 9px;
 }
 
 .login-popup-inputs input {
@@ -60,8 +60,7 @@
 }
 
 .login-popup-condition {
-    display: flex;
-    align-items: center;
+    display: ruby;
     gap: 8px;
     margin-top: -15px;
 }
@@ -70,4 +69,29 @@
     color: tomato;
     font-weight: 500;
     cursor: pointer;
+}
+
+.agree {
+    padding-left: 7px;
+    padding-top: 6px;
+    padding-bottom: 9px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: green;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: red;
+    border: 1px solid #f5c6cb;
 }
