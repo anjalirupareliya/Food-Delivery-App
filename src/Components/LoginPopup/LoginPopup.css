@@ -95,3 +95,24 @@
     color: red;
     border: 1px solid #f5c6cb;
 }
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding: 16px;
+    font-size: 15.5px;
+    outline: none;
+    border-radius: 4px;
+}
+
+.password-wrapper .icon-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
