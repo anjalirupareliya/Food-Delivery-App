@@ -6,7 +6,6 @@ import { API_BASE_URL } from "../../constants/apiconstants";
 import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { Icon } from 'react-icons-kit';
 import { eye } from 'react-icons-kit/feather/eye'
-import { Navigate } from 'react-router-dom';
 
 const LoginPopup = ({ setShowLogin, setUserName }) => {
     const [currState, setCurrState] = useState('Login');
@@ -103,18 +102,25 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
         return true;
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+
         const isEmailValid = validateEmail();
         const isPasswordValid = validatePassword();
 
         if (isEmailValid && isPasswordValid) {
-            const storedUser = JSON.parse(localStorage.getItem('user'));
-            if (storedUser && storedUser.email === email && storedUser.password === password) {
-                setUserName(storedUser.name);
-                setShowLogin(false);
-            } else {
-                setPasswordError('Invalid email or password');
+            try {
+                debugger
+                const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
+                if (response.data.status) {
+                    setErrors({ type: 'success', message: response.data.message });
+                    setUserName(response.data.data.fullName);
+                    // setShowLogin(false);
+                } else {
+                    setErrors({ type: 'error', message1: response.data.message[0].msg });
+                }
+            } catch (error) {
+                setErrors({ type: 'error', message1: 'Something went wrong. Please try again later.' });
             }
         }
     };
@@ -139,17 +145,15 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
                 .then(response => {
                     if (response.data.status) {
                         setErrors({ type: 'success', message: response.data.message });
+                    } else {
+                        setCurrState('Login');
+                        setErrors({ type: 'error', message1: response.data.message[0].msg });
                     }
-                    else {
-                        setErrors({ type: 'error', message1: response.data.message });
-                    }
-                })
-                .catch(e => {
-                    setErrors({ type: 'error', message1: e.response.data.message });
                 });
-
         }
     };
+
+    const clearMessage = () => setErrors({});
 
     return (
         <div className='login-popup'>
@@ -158,8 +162,13 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
                     <h2>{currState}</h2>
                     <img onClick={() => setShowLogin(false)} src={assets.cross_icon} alt='' />
                 </div>
-                {errors.type === 'error' && <div className="alert alert-danger">{errors.message1}</div>}
-                {errors.type === 'success' && <div className="alert alert-success">{errors.message}</div>}
+
+                {errors.type && (
+                    <div className={`alert alert-${errors.type}`}>
+                        {errors.type === 'error' ? errors.message1 : errors.message}
+                        <img className="close-icon" onClick={clearMessage} src={assets.cross_icon} alt="close" />
+                    </div>
+                )}
 
                 <div className='login-popup-inputs'>
                     {currState === 'Sign Up' && (
