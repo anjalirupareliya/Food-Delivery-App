@@ -15,12 +15,13 @@ const App = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
-      setUserName(storedUser.name);
+      setUserName(storedUser.fullname);
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     setUserName('');
   };
 

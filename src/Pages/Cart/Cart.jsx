@@ -4,17 +4,25 @@ import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
 import { AiFillDelete } from "react-icons/ai";
 
-const Cart = ({ userName, setShowLogin }) => {
+const Cart = () => {
   const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const handleCheckout = () => {
-    if (!userName) {
-      setShowLogin(true);
+    const token = localStorage.getItem('token');
+    if (!token) {
       return;
     }
+
+    if (getTotalCartAmount() === 0) {
+      alert("Your cart is empty. Please add items to the cart before proceeding to checkout.");
+      return;
+    }
+
     navigate('/order');
   };
+
+
 
   return (
     <div className='cart'>

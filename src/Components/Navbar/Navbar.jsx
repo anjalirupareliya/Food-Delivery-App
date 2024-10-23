@@ -12,6 +12,14 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
   const [showNavbar, setShowNavbar] = useState(true);
   const [showArrow, setShowArrow] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [Image, setImage] = useState(null);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData && userData.image) {
+      setImage(userData.image);
+    }
+  }, []);
 
   const getCartItems = () => {
     const uniqueItem = Object.keys(cartItems).filter(id => cartItems[id] > 0);
@@ -64,7 +72,11 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
             </div>
             {userName ? (
               <div className="user-info">
-                <BiSolidUser className="user-icon" />
+                {Image ? (
+                  <img src={Image} alt="User" className="user-icon user-image" />
+                ) : (
+                  <BiSolidUser className="user-icon" />
+                )}
                 <p>{userName}</p>
                 <button onClick={onLogout}>Logout</button>
               </div>

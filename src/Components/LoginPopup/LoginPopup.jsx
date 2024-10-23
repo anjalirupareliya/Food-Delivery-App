@@ -110,12 +110,17 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
 
         if (isEmailValid && isPasswordValid) {
             try {
-                debugger
                 const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
                 if (response.data.status) {
-                    setErrors({ type: 'success', message: response.data.message });
-                    setUserName(response.data.data.fullName);
-                    // setShowLogin(false);
+
+                    const { fullName, email, image } = response.data.data;
+                    const user = { fullname: fullName, email: email, image: image };
+
+                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('token', response.data.token);
+
+                    setUserName(user.fullname);
+                    setShowLogin(false);
                 } else {
                     setErrors({ type: 'error', message1: response.data.message[0].msg });
                 }
