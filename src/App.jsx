@@ -12,11 +12,19 @@ const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [userName, setUserName] = useState('');
 
-  useEffect(() => {
+  const checkUserAuth = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+
+    if (storedUser && token) {
       setUserName(storedUser.fullname);
+    } else {
+      setUserName('');
     }
+  };
+
+  useEffect(() => {
+    checkUserAuth();
   }, []);
 
   const handleLogout = () => {

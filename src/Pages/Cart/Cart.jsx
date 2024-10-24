@@ -4,25 +4,18 @@ import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
 import { AiFillDelete } from "react-icons/ai";
 
-const Cart = () => {
+const Cart = ({ setShowLogin }) => {
   const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const handleCheckout = () => {
     const token = localStorage.getItem('token');
     if (!token) {
+      setShowLogin(true);
       return;
     }
-
-    if (getTotalCartAmount() === 0) {
-      alert("Your cart is empty. Please add items to the cart before proceeding to checkout.");
-      return;
-    }
-
     navigate('/order');
   };
-
-
 
   return (
     <div className='cart'>
@@ -37,28 +30,31 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item) => {
-          if (cartItems[item._id] > 0) {
-            return (
-              <div key={item._id}>
-                <div className='cart-items-title cart-items-item'>
-                  <img src={item.image} alt='' />
-                  <p>{item.name}</p>
-                  <p>${item.price}</p>
-                  <div className="quantity-control">
-                    <button onClick={() => removeFromCart(item._id)} className='minus-btn'>-</button>
-                    <span>{cartItems[item._id]}</span>
-                    <button onClick={() => addToCart(item._id)} className='plus-btn'>+</button>
+        {
+          Object.keys(cartItems).length == 0 ? <div className="cart-items-empty">Card is empty!! Please add item into cart.</div> :
+            food_list.map((item) => {
+              if (cartItems[item._id] > 0) {
+                return (
+                  <div key={item._id}>
+                    <div className='cart-items-title cart-items-item'>
+                      <img src={item.image} alt='' />
+                      <p>{item.name}</p>
+                      <p>${item.price}</p>
+                      <div className="quantity-control">
+                        <button onClick={() => removeFromCart(item._id)} className='minus-btn'>-</button>
+                        <span>{cartItems[item._id]}</span>
+                        <button onClick={() => addToCart(item._id)} className='plus-btn'>+</button>
+                      </div>
+                      <p>${item.price * cartItems[item._id]}</p>
+                      <AiFillDelete onClick={() => removeFromCart(item._id, true)} className='cross' />
+                    </div>
+                    <hr />
                   </div>
-                  <p>${item.price * cartItems[item._id]}</p>
-                  <AiFillDelete onClick={() => removeFromCart(item._id, true)} className='cross' />
-                </div>
-                <hr />
-              </div>
-            );
-          }
-          return null;
-        })}
+                );
+              }
+              return null;
+            })
+        }
       </div>
       <div className='cart-bottom'>
         <div className='cart-total'>
@@ -79,7 +75,7 @@ const Cart = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
+          <button onClick={handleCheckout} disabled={(Object.keys(cartItems).length == 0)}>PROCEED TO CHECKOUT</button>
         </div>
         <div className='cart-promocode'>
           <div>

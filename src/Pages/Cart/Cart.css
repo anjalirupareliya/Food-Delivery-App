@@ -72,6 +72,10 @@
     border-radius: 4px;
 }
 
+.cart-total button:disabled {
+    opacity: 0.8;
+}
+
 .cart-promocode {
     flex: 1;
 }
@@ -126,4 +130,9 @@
 .quantity-control span {
     margin: 0 10px;
     font-size: 16px;
+}
+
+.cart-items-empty {
+    text-align: center;
+    margin: 10px 0px;
 }
