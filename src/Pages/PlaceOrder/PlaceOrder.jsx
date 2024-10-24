@@ -8,7 +8,6 @@ import { API_BASE_URL } from "../../constants/apiconstants";
 const PlaceOrder = () => {
   const { getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
-
   const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
   const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
   const cities = {
@@ -29,6 +28,7 @@ const PlaceOrder = () => {
     firstName: '',
     lastName: '',
     email: '',
+    no: '',
     city: '',
     street: '',
     state: '',
@@ -39,24 +39,20 @@ const PlaceOrder = () => {
 
   const [errors, setErrors] = useState({});
   const [addressList, setAddressList] = useState([]);
-  const [showAddressInputs, setShowAddressInputs] = useState(false);
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      const [firstName, lastName] = storedUser.fullname.split(' ');
-      setFormData({
-        ...formData,
-        firstName: firstName || '',
-        lastName: lastName || '',
-        email: storedUser.email || ''
-      });
-    }
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
 
+  useEffect(() => {
     const fetchAddressData = async () => {
       try {
         const response = await axios.get(API_BASE_URL + '/address');
         if (response.data.status) {
-          setAddressList(response.data.data);
+          const fetchedAddresses = response.data.data;
+          setAddressList(fetchedAddresses);
+
+          const defaultAddress = fetchedAddresses[0];
+          if (defaultAddress) {
+            handleAddressChange(defaultAddress.id);
+          }
         }
       } catch (error) {
         console.error('Error fetching address data:', error);
@@ -75,76 +71,32 @@ const PlaceOrder = () => {
     });
   };
 
-  const handleAddressSelect = (e) => {
-    debugger
-    const selectedAddressId = e.target.value;
-    const selectedAddress = addressList.find(address => address.id === Number(selectedAddressId));
-
+  const handleAddressChange = (addressId) => {
+    const selectedAddress = addressList.find((address) => address.id === addressId);
     if (selectedAddress) {
-      debugger
+      setSelectedAddressId(addressId);
       setFormData({
-        firstName: selectedAddress.firstName,
-        lastName: selectedAddress.lastName,
-        email: selectedAddress.email,
-        city: selectedAddress.city,
-        street: selectedAddress.street,
-        state: selectedAddress.state,
-        zip: selectedAddress.zip,
-        country: selectedAddress.country,
-        phone: selectedAddress.phone,
-      });
-      // setShowAddressInputs(false);
-    } else {
-      setFormData({
-        firstName: '',
-        lastName: '',
+        firstName: selectedAddress.fullName.split(' ')[0] || '',
+        lastName: selectedAddress.fullName.split(' ')[1] || '',
         email: '',
-        city: '',
-        street: '',
-        state: '',
-        zip: '',
-        country: '',
-        phone: '',
+        no: selectedAddress.no || '',
+        city: selectedAddress.city || '',
+        street: selectedAddress.street || '',
+        state: selectedAddress.state || '',
+        zip: selectedAddress.zipCode || '',
+        country: selectedAddress.country || '',
+        phone: selectedAddress.number || '',
       });
-      setShowAddressInputs(true);
-    }
-  };
-
-  const validateForm = () => {
-    const { firstName, lastName, email, city, street, state, zip, country, phone } = formData;
-    let newErrors = {};
-
-    if (!firstName) newErrors.firstName = 'First name is required';
-    if (!lastName) newErrors.lastName = 'Last name is required';
-    if (!email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email is not valid';
-    }
-    if (!street) newErrors.street = 'Street is required';
-    if (!city) newErrors.city = 'Please select a city';
-    if (!state) newErrors.state = 'Please select a State';
-    if (!zip) newErrors.zip = 'Zip code is required';
-    if (!country) newErrors.country = 'Please select a country';
-    if (!phone) newErrors.phone = 'Please Enter Your Number';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      navigate('/confirm');
     }
   };
 
   const handleAddNewAddress = () => {
-    setShowAddressInputs(true);
+    setSelectedAddressId(null);
     setFormData({
       firstName: '',
       lastName: '',
       email: '',
+      no: '',
       city: '',
       street: '',
       state: '',
@@ -154,95 +106,143 @@ const PlaceOrder = () => {
     });
   };
 
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/address/${addressId}`);
+      setAddressList((prevList) => prevList.filter((address) => address.id !== addressId));
+      if (selectedAddressId === addressId) setSelectedAddressId(null);
+    } catch (error) {
+      console.error('Error deleting address:', error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      navigate('/confirm');
+    }
+  };
+
+  const validateForm = () => {
+    const { firstName, lastName, email, no, city, street, state, zip, country, phone } = formData;
+    let newErrors = {};
+
+    if (!firstName) newErrors.firstName = 'First name is required';
+    if (!lastName) newErrors.lastName = 'Last name is required';
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is not valid';
+    }
+    if (!no) newErrors.no = 'House No. is required';
+    if (!street) newErrors.street = 'Street is required';
+    if (!city) newErrors.city = 'Please select a city';
+    if (!state) newErrors.state = 'Please select a state';
+    if (!zip) newErrors.zip = 'Zip code is required';
+    if (!country) newErrors.country = 'Please select a country';
+    if (!phone) newErrors.phone = 'Please Enter Your Number';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   return (
     <form className='place-order' onSubmit={handleSubmit}>
       <div className='place-order-left'>
-        <p className='title'>Delivery Information</p>
+        <p className="title1"> Select a delivery address</p>
+        {addressList.length > 0 && (
+          <div>
+            {addressList.map((address) => (
+              <div key={address.id} className="radio-container">
+                <label>
+                  <input type="radio" name="address" className='mr-10' value={address.id} checked={selectedAddressId === address.id} onChange={() => handleAddressChange(address.id)} />
+                  <span className='font-500 pr-5'>{address.fullName}</span>
+                  {` ${address.no}, ${address.street}, ${address.city}, ${address.state} - ${address.zipCode}, ${address.country}`}
+                </label>
+                <div>
+                  <button type="button" className="delete-button" onClick={() => handleDeleteAddress(address.id)} > Delete </button>
+                </div>
+              </div>
+            ))}
 
-        <div className='form-group'>
-          <p className='new'>Your addresses:</p>
-          {addressList.map((address, index) => (
-            <div key={index} className="address-option">
-              <input type="radio" name="defaultAddress" value={address.id} id={`address-${address.id}`} onChange={handleAddressSelect} className="address-radio" />
-              <label htmlFor={`address-${address.id}`}>
-                <span className="full-name">{address.fullName}</span> {address.no}, {address.street}, {address.city}, {address.state}, {address.zipCode}, {address.country}
+            <div className="radio-container">
+              <label>
+                <input type="radio" name="address" className='mr-10' value="new_address" onClick={handleAddNewAddress} />
+                <span className='font-500 pr-5'>Add new address</span>
               </label>
-            </div>
-          ))}
-        </div>
-
-
-        <button id="button" type="button" onClick={handleAddNewAddress}>+ Add New Address</button>
-
-        {showAddressInputs && (
-          <div className='multi-fields'>
-            <div className='form-group w100'>
-              <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleChange} />
-              {errors.firstName && <span className='error-message'>{errors.firstName}</span>}
-            </div>
-
-            <div className='form-group w100'>
-              <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleChange} />
-              {errors.lastName && <span className='error-message'>{errors.lastName}</span>}
             </div>
           </div>
         )}
 
-        {showAddressInputs && (
-          <>
-            <div className='form-group'>
-              <input className='gk' type='email' name='email' placeholder='Email Address' value={formData.email} onChange={handleChange} />
-              {errors.email && <span className='error-message'>{errors.email}</span>}
-            </div>
+        <p className='title'>Delivery Information</p>
 
-            <div className='form-group'>
-              <input className='gk' type='text' name='street' placeholder='Enter Your Street' value={formData.street} onChange={handleChange} />
-              {errors.street && <span className='error-message'>{errors.street}</span>}
-            </div>
+        <div className='multi-fields'>
+          <div className='form-group w100'>
+            <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleChange} />
+            {errors.firstName && <span className='error-message'>{errors.firstName}</span>}
+          </div>
 
-            <div className='multi-fields'>
-              <div className='form-group w100'>
-                <select className='gk' name='city' value={formData.city} onChange={handleChange}>
-                  <option value=''>Select City</option>
-                  {formData.state && cities[formData.state]?.map((city, index) => (
-                    <option key={index} value={city}>{city}</option>
-                  ))}
-                </select>
-                {errors.city && <span className='error-message'>{errors.city}</span>}
-              </div>
-              <div className='form-group w100'>
-                <select className='gk' name='state' value={formData.state} onChange={handleChange}>
-                  <option value=''>Select State</option>
-                  {states.map((state, index) => (
-                    <option key={index} value={state}>{state}</option>
-                  ))}
-                </select>
-                {errors.state && <span className='error-message'>{errors.state}</span>}
-              </div>
-            </div>
+          <div className='form-group w100'>
+            <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleChange} />
+            {errors.lastName && <span className='error-message'>{errors.lastName}</span>}
+          </div>
+        </div>
+        <div className='form-group'>
+          <input className='gk' type='email' name='email' placeholder='Email Address' value={formData.email} onChange={handleChange} />
+          {errors.email && <span className='error-message'>{errors.email}</span>}
+        </div>
+        <div className='form-group'>
+          <input className='gk' type='text' name='House No.' placeholder='Flat, House no., Building, Apartment' value={formData.no} onChange={handleChange} />
+          {errors.no && <span className='error-message'>{errors.no}</span>}
+        </div>
+        <div className='form-group'>
+          <input className='gk' type='text' name='street' placeholder='Enter Your Street' value={formData.street} onChange={handleChange} />
+          {errors.street && <span className='error-message'>{errors.street}</span>}
+        </div>
 
-            <div className='multi-fields'>
-              <div className='form-group w100'>
-                <input className='gk' type='text' name='zip' placeholder='Zip Code' value={formData.zip} onChange={handleChange} />
-                {errors.zip && <span className='error-message'>{errors.zip}</span>}
-              </div>
-              <div className='form-group w100'>
-                <select className='gk' name='country' value={formData.country} onChange={handleChange}>
-                  <option value=''>Select Country</option>
-                  {countrys.map((country, index) => (
-                    <option key={index} value={country}>{country}</option>
-                  ))}
-                </select>
-                {errors.country && <span className='error-message'>{errors.country}</span>}
-              </div>
-            </div>
+        <div className='multi-fields'>
+          <div className='form-group w100'>
+            <select className='gk' name='city' value={formData.city} onChange={handleChange}>
+              <option value=''>Select City</option>
+              {formData.state && cities[formData.state]?.map((city, index) => (
+                <option key={index} value={city}>{city}</option>
+              ))}
+            </select>
+            {errors.city && <span className='error-message'>{errors.city}</span>}
+          </div>
+          <div className='form-group w100'>
+            <select className='gk' name='state' value={formData.state} onChange={handleChange}>
+              <option value=''>Select State</option>
+              {states.map((state, index) => (
+                <option key={index} value={state}>{state}</option>
+              ))}
+            </select>
+            {errors.state && <span className='error-message'>{errors.state}</span>}
+          </div>
+        </div>
 
-            <div className='form-group'>
-              <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleChange} />
-              {errors.phone && <span className='error-message'>{errors.phone}</span>}
-            </div>
-          </>
-        )}
+        <div className='multi-fields'>
+          <div className='form-group w100'>
+            <input className='gk' type='text' name='zip' placeholder='Zip' value={formData.zip} onChange={handleChange} />
+            {errors.zip && <span className='error-message'>{errors.zip}</span>}
+          </div>
+
+          <div className='form-group w100'>
+            <select className='gk' name='country' value={formData.country} onChange={handleChange}>
+              <option value=''>Select Country</option>
+              {countrys.map((country, index) => (
+                <option key={index} value={country}>{country}</option>
+              ))}
+            </select>
+            {errors.country && <span className='error-message'>{errors.country}</span>}
+          </div>
+        </div>
+
+        <div className='form-group'>
+          <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleChange} />
+          {errors.phone && <span className='error-message'>{errors.phone}</span>}
+          <button type='button'>Save</button>
+        </div>
       </div>
 
       <div className='place-order-right'>

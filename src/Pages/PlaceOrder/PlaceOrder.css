@@ -9,7 +9,7 @@
     align-items: start;
     justify-content: space-between;
     gap: 50px;
-    margin-top: 170px;
+    margin-top: 150px;
     padding: 20px;
 }
 
@@ -19,10 +19,12 @@
 }
 
 .form-group {
-    margin-bottom: 0;
+    margin-bottom: 15px;
 }
 
 .place-order-left {
+    flex: 1;
+    padding: 20px;
     width: 100%;
     max-width: max(30%, 500px);
 }
@@ -30,12 +32,12 @@
 .place-order-left .title {
     font-size: 30px;
     font-weight: 600;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 20px;
 }
 
 .place-order-left input {
     margin-bottom: 5px;
-    width: 100%;
     padding: 19px;
     border: 1px solid #c5c5c5;
     border-radius: 4px;
@@ -55,6 +57,15 @@
 
 .place-order .cart-total button {
     margin-top: 30px;
+}
+
+.place-order-left button {
+    color: white;
+    background-color: tomato;
+    width: max(15vw, 200px);
+    padding: 20px 0px;
+    border-radius: 4px;
+    font-size: 17px;
 }
 
 .error-message {
@@ -84,38 +95,63 @@ select {
     margin-top: 20px;
 }
 
-.gk {
-    margin-top: 30px;
-    outline-color: tomato;
-}
-
-#button {
-    background-color: tomato;
-    color: white;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.new {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-.address-option {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-right: 307px;
-}
-
-.address-option label {
-    font-size: 16px;
-}
-
-.full-name {
+.title {
     font-weight: bold;
-    font-size: 18px;
+    margin: 20px 0 10px;
+}
+
+.title1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.gk {
+    width: 100%;
+}
+
+.form-group button {
+    width: max(10vw, 150px);
+    padding: 12px 5px;
+    background-color: black;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    margin-top: 10px;
+    margin-left: 266px;
+}
+
+.multi-fields {
     display: flex;
-    align-items: center;
+    gap: 10px;
+}
+
+.radio-container {
+    margin-bottom: 7px;
+    border: 1px solid #e9e7e7;
+    border-radius: 5px;
+    padding: 10px;
+    background: #fbfbfb;
+}
+
+.font-500 {
+    font-size: large;
+    font-weight: 500;
+}
+
+.pr-5 {
+    padding-right: 5px;
+}
+
+.mr-10 {
+    margin-right: 10px;
+}
+
+.delete-button {
+    color: white;
+    background-color: tomato;
+    width: 16%;
+    padding: 8px 0px;
+    border-radius: 4px;
+    font-size: 13px;
 }
