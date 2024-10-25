@@ -62,10 +62,6 @@
 .place-order-left button {
     color: white;
     background-color: tomato;
-    width: max(15vw, 200px);
-    padding: 20px 0px;
-    border-radius: 4px;
-    font-size: 17px;
 }
 
 .error-message {
@@ -89,6 +85,7 @@ select {
     border-radius: 5px;
     font-size: 16px;
     transition: border-color 0.3s ease;
+    margin-right: 10px;
 }
 
 .cart-total {
@@ -110,7 +107,7 @@ select {
     width: 100%;
 }
 
-.form-group button {
+#tb {
     width: max(10vw, 150px);
     padding: 12px 5px;
     background-color: black;
@@ -147,11 +144,34 @@ select {
     margin-right: 10px;
 }
 
-.delete-button {
-    color: white;
-    background-color: tomato;
-    width: 16%;
-    padding: 8px 0px;
-    border-radius: 4px;
-    font-size: 13px;
+.radio-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: space-between;
 }
+
+.cross1 {
+    cursor: pointer;
+    color: black;
+    font-size: 1.3em;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+.editCartLinkBtn {
+    color: tomato;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 13px;
+}
+
+.editCartLinkBtn:hover {
+    border-bottom: 2px solid tomato;
+}
+
+
+/* .radio-container input:checked {
+    background: yellow;
+    outline: 2px solid deeppink;
+} */

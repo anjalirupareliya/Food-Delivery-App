@@ -2,8 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import './PlaceOrder.css';
 import { StoreContext } from '../../Components/Context/Storecontext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../../constants/apiconstants";
+import { AiFillDelete } from "react-icons/ai";
 
 const PlaceOrder = () => {
   const { getTotalCartAmount } = useContext(StoreContext);
@@ -39,20 +40,14 @@ const PlaceOrder = () => {
 
   const [errors, setErrors] = useState({});
   const [addressList, setAddressList] = useState([]);
-  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [selectedAddressId, setSelectedAddressId] = useState("new_address");
 
   useEffect(() => {
     const fetchAddressData = async () => {
       try {
-        const response = await axios.get(API_BASE_URL + '/address');
+        const response = await axios.get(`${API_BASE_URL}/address`);
         if (response.data.status) {
-          const fetchedAddresses = response.data.data;
-          setAddressList(fetchedAddresses);
-
-          const defaultAddress = fetchedAddresses[0];
-          if (defaultAddress) {
-            handleAddressChange(defaultAddress.id);
-          }
+          setAddressList(response.data.data);
         }
       } catch (error) {
         console.error('Error fetching address data:', error);
@@ -63,12 +58,8 @@ const PlaceOrder = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData, [name]: value,
-    });
-    setErrors({
-      ...errors, [name]: '',
-    });
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: '' });
   };
 
   const handleAddressChange = (addressId) => {
@@ -90,31 +81,37 @@ const PlaceOrder = () => {
     }
   };
 
-  const handleAddNewAddress = () => {
-    setSelectedAddressId(null);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      no: '',
-      city: '',
-      street: '',
-      state: '',
-      zip: '',
-      country: '',
-      phone: '',
-    });
-  };
-
-  const handleDeleteAddress = async (addressId) => {
+  const handleDeleteAddress = async (id) => {
     try {
-      await axios.delete(`${API_BASE_URL}/address/${addressId}`);
-      setAddressList((prevList) => prevList.filter((address) => address.id !== addressId));
-      if (selectedAddressId === addressId) setSelectedAddressId(null);
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`${API_BASE_URL}/delete/address/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.status) {
+        setAddressList(addressList.filter((address) => address.id !== id));
+        if (selectedAddressId === id) {
+          setSelectedAddressId("new_address");
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            no: '',
+            city: '',
+            street: '',
+            state: '',
+            zip: '',
+            country: '',
+            phone: '',
+          });
+        }
+      }
     } catch (error) {
-      console.error('Error deleting address:', error);
+      console.error("Error deleting address:", error);
     }
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -154,20 +151,21 @@ const PlaceOrder = () => {
           <div>
             {addressList.map((address) => (
               <div key={address.id} className="radio-container">
-                <label>
-                  <input type="radio" name="address" className='mr-10' value={address.id} checked={selectedAddressId === address.id} onChange={() => handleAddressChange(address.id)} />
-                  <span className='font-500 pr-5'>{address.fullName}</span>
-                  {` ${address.no}, ${address.street}, ${address.city}, ${address.state} - ${address.zipCode}, ${address.country}`}
-                </label>
                 <div>
-                  <button type="button" className="delete-button" onClick={() => handleDeleteAddress(address.id)} > Delete </button>
+                  <label>
+                    <input type="radio" name="address" className='mr-10' value={address.id} checked={selectedAddressId === address.id} onChange={() => handleAddressChange(address.id)} />
+                    <span className='font-500 pr-5'>{address.fullName}</span>
+                    {` ${address.no}, ${address.street}, ${address.city}, ${address.state} - ${address.zipCode}, ${address.country}`}
+                  </label>
+                </div>
+                <div>
+                  <AiFillDelete className='cross1' onClick={() => handleDeleteAddress(address.id)} />
                 </div>
               </div>
             ))}
-
             <div className="radio-container">
               <label>
-                <input type="radio" name="address" className='mr-10' value="new_address" onClick={handleAddNewAddress} />
+                <input type="radio" name="address" className='mr-10' value="new_address" checked={selectedAddressId === "new_address"} onClick={() => setSelectedAddressId("new_address")} />
                 <span className='font-500 pr-5'>Add new address</span>
               </label>
             </div>
@@ -188,11 +186,15 @@ const PlaceOrder = () => {
           </div>
         </div>
         <div className='form-group'>
+          <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleChange} />
+          {errors.phone && <span className='error-message'>{errors.phone}</span>}
+        </div>
+        <div className='form-group'>
           <input className='gk' type='email' name='email' placeholder='Email Address' value={formData.email} onChange={handleChange} />
           {errors.email && <span className='error-message'>{errors.email}</span>}
         </div>
         <div className='form-group'>
-          <input className='gk' type='text' name='House No.' placeholder='Flat, House no., Building, Apartment' value={formData.no} onChange={handleChange} />
+          <input className='gk' type='text' name='adress' placeholder='Flat, House no., Building, Apartment' value={formData.no} onChange={handleChange} />
           {errors.no && <span className='error-message'>{errors.no}</span>}
         </div>
         <div className='form-group'>
@@ -237,17 +239,15 @@ const PlaceOrder = () => {
             {errors.country && <span className='error-message'>{errors.country}</span>}
           </div>
         </div>
-
-        <div className='form-group'>
-          <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleChange} />
-          {errors.phone && <span className='error-message'>{errors.phone}</span>}
-          <button type='button'>Save</button>
-        </div>
+        <button id='tb' type='submit'>Save</button>
       </div>
 
       <div className='place-order-right'>
         <div className='cart-total'>
-          <h2>Cart Totals</h2>
+          <div className='cart-total-details'>
+            <h2>Cart Totals</h2>
+            <Link to='/cart' className='editCartLinkBtn'>Edit Cart</Link>
+          </div>
           <div className='cart-total-details'>
             <p>SubTotal</p>
             <p>${getTotalCartAmount()}</p>
@@ -264,7 +264,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button type='submit'>PROCEED TO PAYMENT</button>
+          <button type='submit' onClick={handleSubmit}>PROCEED TO PAYMENT</button>
         </div>
       </div>
     </form>
