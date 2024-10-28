@@ -177,3 +177,11 @@ select {
     margin-bottom: 17px;
     padding: 10px
 }
+
+.error-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    margin-bottom: 17px;
+    padding: 10px
+}

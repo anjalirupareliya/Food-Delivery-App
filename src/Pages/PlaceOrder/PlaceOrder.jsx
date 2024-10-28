@@ -5,7 +5,6 @@ import { StoreContext } from '../../Components/Context/Storecontext';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { AiFillDelete } from "react-icons/ai";
-import { assets } from '../../assets/assets';
 import { loadScript, createRazorPayOrder } from './Payment';
 
 const PlaceOrder = () => {
@@ -46,25 +45,26 @@ const PlaceOrder = () => {
   const [addressList, setAddressList] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState("new_address");
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    const fetchAddressData = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/address`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        setAddressList(response.data.data);
+      } catch (error) {
+        console.error('Error fetching address data:', error);
+      }
+    };
+
     loadScript();
     fetchAddressData();
   }, []);
-
-  const fetchAddressData = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/address`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      });
-
-      setAddressList(response.data.data);
-    } catch (error) {
-      console.error('Error fetching address data:', error);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -114,7 +114,7 @@ const PlaceOrder = () => {
 
   const handleDeleteAddress = async (id) => {
     try {
-      // const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await axios.delete(`${API_BASE_URL}/delete/address/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -158,48 +158,32 @@ const PlaceOrder = () => {
   };
 
   const saveDefaultAddress = async () => {
-    const { id, firstName, lastName, no, street, city, state, zip, country, phone, type } = formData;
-    const addressId = id !== "new_address" ? id : null;
+    const { firstName, lastName, no, street, city, state, zip, country, phone, type } = formData;
+    const id = selectedAddressId !== "new_address" ? selectedAddressId : null;
 
     try {
+      debugger
       const token = localStorage.getItem("token");
-      const isNewDefault = addressId === "new_address";
-
-      // if (isNewDefault) {
-      //   await axios.patch(`${API_BASE_URL}/address`, {
-      //     isDefault: false,
-      //     user_Id: userId,
-      //   }, {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   });
-      // } else {
-      //   const currentAddress = addressList.find(address => address.id === id);
-      //   if (currentAddress && currentAddress.isDefault) {
-      //     await axios.patch(`${API_BASE_URL}/address`, {
-      //       isDefault: false,
-      //       user_Id: userId,
-      //     }, {
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //       },
-      //     });
-      //   }
-      // }
+      await axios.post(`${API_BASE_URL}/address`, {
+        isDefault: false,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const response = await axios.post(`${API_BASE_URL}/address`, {
         id,
         fullName: `${firstName} ${lastName}`,
-        number: phone,
         no,
         type,
         street,
         city,
         state,
-        country,
         zipCode: zip,
-        isDefault: addressId === "new_address" ? true : false,
+        country,
+        number: phone,
+        isDefault: true,
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -210,13 +194,12 @@ const PlaceOrder = () => {
         setSuccessMessage(response.data.message);
         fetchAddressData();
       } else {
-        alert(response.data.message);
+        setErrorMessage(response.data.message);
       }
     } catch (error) {
       console.error('Error saving default address:', error);
     }
   };
-
 
   const clearMessage = () => {
     setSuccessMessage('');
@@ -248,12 +231,17 @@ const PlaceOrder = () => {
             </div>
           </div>
         )}
-        <p className='title'>Delivery Information</p><img className="close-icon" onClick={clearMessage} src={assets.cross_icon} alt="close" />
+        <p className='title'>Delivery Information</p>
 
         {successMessage && (
-          <div >
-            <p>{successMessage}</p>
-            <img className="close-icon" onClick={clearMessage} src={assets.cross_icon} alt="close" />
+          <div>
+            <p className='success-message'>{successMessage}</p>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div>
+            <p className='error-message'>{errorMessage}</p>
           </div>
         )}
         <input type='hidden' name='id' value={formData.id} />
