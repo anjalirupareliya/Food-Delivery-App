@@ -254,7 +254,7 @@ const PlaceOrder = () => {
             <img className="close-icon" onClick={clearMessage} src={assets.cross_icon} alt="close" />
           </div>
         )}
-        <input type='id' name='id' value={formData.id} />
+        <input type='hidden' name='id' value={formData.id} />
 
         <div className='multi-fields'>
           <div className='form-group w100'>
