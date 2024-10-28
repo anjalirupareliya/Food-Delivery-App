@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { AiFillDelete } from "react-icons/ai";
 import { assets } from '../../assets/assets';
+import { loadScript, createRazorPayOrder } from './Payment';
 
 const PlaceOrder = () => {
   const { getTotalCartAmount } = useContext(StoreContext);
@@ -47,6 +48,7 @@ const PlaceOrder = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
+    loadScript();
     fetchAddressData();
   }, []);
 
@@ -351,7 +353,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button type='submit' onClick={handleSubmit}>PROCEED TO PAYMENT</button>
+          <button type='submit' onClick={() => createRazorPayOrder(getTotalCartAmount() + 5)}>PROCEED TO PAYMENT</button>
         </div>
       </div>
     </form>
