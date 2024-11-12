@@ -170,18 +170,136 @@ select {
     border-bottom: 2px solid tomato;
 }
 
-.success-message {
+.success-container,
+.delete-container {
     background-color: #d4edda;
     color: green;
     border: 1px solid #c3e6cb;
     margin-bottom: 17px;
-    padding: 10px
+    padding: 10px;
 }
 
-.error-message {
+.error-container {
     color: #a94442;
     background-color: #f2dede;
     border-color: #ebccd1;
     margin-bottom: 17px;
-    padding: 10px
+    padding: 10px;
+}
+
+.success-container,
+.error-container,
+.delete-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.close-img {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+
+.confirmation-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-popup .popup-content {
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.confirmation-popup .popup-content p {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.confirmation-popup .popup-content .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.confirmation-popup .popup-content button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.confirmation-popup .popup-content button.confirm-button {
+    background-color: red;
+    color: white;
+}
+
+.confirmation-popup .popup-content button.confirm-button:hover {
+    background-color: lightcoral;
+}
+
+.confirmation-popup .popup-content button.cancel-button {
+    background-color: lightcoral;
+    color: white;
+}
+
+.confirmation-popup .popup-content .close-button {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    background-color: transparent;
+    border: none;
+    color: #888;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.confirmation-popup .popup-content .close-button:hover {
+    color: #555;
+}
+
+.confirmation-popup .popup-content .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.confirmation-popup .popup-content .popup-header p {
+    margin: 0;
+}
+
+.confirmation-popup .popup-content .popup-header .close-button {
+    font-size: 25px;
+    color: black;
+    cursor: pointer;
+}
+
+.confirmation-popup .popup-content .popup-header .close-button:hover {
+    color: lightgray;
+}
+
+.confirmation-popup .popup-content .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }

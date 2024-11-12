@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { AiFillDelete } from "react-icons/ai";
 import { loadScript, createRazorPayOrder } from './Payment';
+import { assets } from '../../assets/assets';
 
 const PlaceOrder = () => {
   const { getTotalCartAmount } = useContext(StoreContext);
@@ -46,6 +47,9 @@ const PlaceOrder = () => {
   const [selectedAddressId, setSelectedAddressId] = useState("new_address");
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [deleteMessage, setdeleteMessage] = useState('');
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
   useEffect(() => {
     const fetchAddressData = async () => {
@@ -90,9 +94,9 @@ const PlaceOrder = () => {
         country: '',
         phone: '',
       });
-    }
-    else {
+    } else {
       const selectedAddress = addressList.find((address) => address.id === addressId);
+
       if (selectedAddress) {
         setFormData({
           id: selectedAddress.id || '',
@@ -108,28 +112,20 @@ const PlaceOrder = () => {
           country: selectedAddress.country || '',
           phone: selectedAddress.number || '',
         });
+
+        const isValid = validateFormData(selectedAddress);
+        if (isValid) {
+          setErrors({});
+        }
       }
     }
   };
 
-  const handleDeleteAddress = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(`${API_BASE_URL}/delete/address/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response.data.status) {
-        setAddressList(addressList.filter((address) => address.id !== id));
-        if (selectedAddressId === id) {
-          handleAddressChange("new_address");
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting address:", error);
-    }
+  const validateFormData = (data) => {
+    const requiredFields = ['fullName', 'type', 'no', 'street', 'city', 'state', 'zipCode', 'country', 'number'];
+    return requiredFields.every((field) => data[field] && data[field].toString().trim() !== '');
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -162,15 +158,9 @@ const PlaceOrder = () => {
     const id = selectedAddressId !== "new_address" ? selectedAddressId : null;
 
     try {
-      debugger
+      setErrorMessage('');
+      setSuccessMessage('');
       const token = localStorage.getItem("token");
-      await axios.post(`${API_BASE_URL}/address`, {
-        isDefault: false,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
       const response = await axios.post(`${API_BASE_URL}/address`, {
         id,
@@ -192,23 +182,78 @@ const PlaceOrder = () => {
 
       if (response.data.status) {
         setSuccessMessage(response.data.message);
-        fetchAddressData();
       } else {
         setErrorMessage(response.data.message);
       }
     } catch (error) {
-      console.error('Error saving default address:', error);
+      setErrorMessage('An error occurred while updating the address.');
     }
   };
 
-  const clearMessage = () => {
+  const handleclearMessage = () => {
     setSuccessMessage('');
+  };
+
+  const handleerrorMessage = () => {
+    setErrorMessage('');
+  }
+
+  const handledeleteMessage = () => {
+    setdeleteMessage('');
+  }
+
+  const handleSaveOrUpdate = () => {
+    if (validateForm()) {
+      saveDefaultAddress();
+    }
+  };
+
+  const confirmDeleteAddress = (id) => {
+    setShowConfirmationPopup(true);
+    setAddressToDelete(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    setShowConfirmationPopup(false);
+    if (addressToDelete) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(`${API_BASE_URL}/delete/address/${addressToDelete}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data.status) {
+          setAddressList(addressList.filter((address) => address.id !== addressToDelete));
+          setdeleteMessage("Address successfully deleted.");
+          if (selectedAddressId === addressToDelete) {
+            handleAddressChange("new_address");
+          }
+        } else {
+          setErrorMessage(response.data.message);
+        }
+      } catch (error) {
+        setErrorMessage("An error occurred while deleting the address.");
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmationPopup(false);
+    setAddressToDelete(null);
   };
 
   return (
     <form className='place-order' onSubmit={handleSubmit}>
       <div className='place-order-left'>
         <p className="title1">Select a delivery address</p>
+        {deleteMessage && (
+          <div className='delete-container'>
+            <p className='delete-message'>{deleteMessage}</p>
+            <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handledeleteMessage} />
+          </div>
+        )}
         {addressList.length > 0 && (
           <div>
             {addressList.map((address) => (
@@ -219,10 +264,24 @@ const PlaceOrder = () => {
                   {` ${address.no}, ${address.street}, ${address.city}, ${address.state} - ${address.zipCode}, ${address.country}`}
                 </label>
                 <div>
-                  <AiFillDelete className='cross1' onClick={() => handleDeleteAddress(address.id)} />
+                  <AiFillDelete className='cross1' onClick={() => confirmDeleteAddress(address.id)} />
                 </div>
               </div>
             ))}
+            {showConfirmationPopup && (
+              <div className="confirmation-popup">
+                <div className="popup-content">
+                  <div className="popup-header">
+                    <p>Are you sure you want to delete this address?</p>
+                    <button className="close-button" onClick={handleCancelDelete}>×</button>
+                  </div>
+                  <div className="button-container">
+                    <button onClick={handleConfirmDelete} className="confirm-button">Yes</button>
+                    <button onClick={handleCancelDelete} className="cancel-button">No</button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="radio-container">
               <label>
                 <input type="radio" name="address" className='mr-10' value="new_address" checked={selectedAddressId === "new_address"} onChange={() => handleAddressChange("new_address")} />
@@ -232,18 +291,20 @@ const PlaceOrder = () => {
           </div>
         )}
         <p className='title'>Delivery Information</p>
-
         {successMessage && (
-          <div>
+          <div className='success-container'>
             <p className='success-message'>{successMessage}</p>
+            <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleclearMessage} />
           </div>
         )}
 
         {errorMessage && (
-          <div>
-            <p className='error-message'>{errorMessage}</p>
+          <div className='error-container'>
+            <p className='error-message1'>{errorMessage}</p>
+            <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleerrorMessage} />
           </div>
         )}
+
         <input type='hidden' name='id' value={formData.id} />
 
         <div className='multi-fields'>
@@ -315,7 +376,7 @@ const PlaceOrder = () => {
             {errors.country && <span className='error-message'>{errors.country}</span>}
           </div>
         </div>
-        <button id='tb' type='button' onClick={() => { if (validateForm()) { saveDefaultAddress() } }}>
+        <button id='tb' type='button' onClick={handleSaveOrUpdate}>
           {selectedAddressId === "new_address" ? "Save" : "Update"}
         </button>
       </div>
@@ -341,7 +402,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button type='submit' onClick={() => createRazorPayOrder(getTotalCartAmount() + 5)}>PROCEED TO PAYMENT</button>
+          <button type='button' onClick={() => createRazorPayOrder(getTotalCartAmount() + 5)} >PROCEED TO PAYMENT</button>
         </div>
       </div>
     </form>

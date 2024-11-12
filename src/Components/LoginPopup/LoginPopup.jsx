@@ -157,7 +157,6 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
                 });
         }
     };
-
     const clearMessage = () => setErrors({});
 
     return (
