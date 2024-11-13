@@ -16,7 +16,7 @@ const Order = ({ userName }) => {
                 <p className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
                 <div className="button-group">
-                    <button onClick={() => navigate('/cart')} className="view-order-button">
+                    <button onClick={() => navigate('/invoice')} className="view-order-button">
                         View Order
                     </button>
                     <button onClick={() => navigate('/')} className="continue-shopping-button">

@@ -1,6 +1,5 @@
 import { BASE_URL, RAZORPAY_KEY_ID } from "../../constants/apiconstants";
 
-
 // load script for razorpay
 export const loadScript = (url) => {
     return new Promise((resolve, reject) => {
@@ -11,7 +10,6 @@ export const loadScript = (url) => {
         document.body.appendChild(script);
     });
 };
-
 
 // Take all data and pass the data in backend
 export const createRazorPayOrder = async (amount, cartItems) => {
@@ -41,8 +39,7 @@ export const createRazorPayOrder = async (amount, cartItems) => {
     }
 };
 
-
-// Opens the payment screen and send data in backend
+// Opens the payment screen and sends data to backend
 const handleRazorpayScreen = async (order_id, amount, cartItems) => {
     try {
         const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
@@ -74,9 +71,9 @@ const handleRazorpayScreen = async (order_id, amount, cartItems) => {
                 }).then(response => response.json())
                     .then(response => {
                         if (response.status) {
-
+                            window.location.href = "/confirm?invoiceId=" + response.invoiceId;
                         } else {
-
+                            alert("Payment verification failed. Please try again.");
                         }
                     })
                     .catch(err => 'Payment error: ' + console.error(err));
