@@ -9,7 +9,7 @@ import { loadScript, createRazorPayOrder } from './Payment';
 import { assets } from '../../assets/assets';
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount } = useContext(StoreContext);
+  const { getTotalCartAmount, cartItems } = useContext(StoreContext);
   const navigate = useNavigate();
   const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
   const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
@@ -50,6 +50,7 @@ const PlaceOrder = () => {
   const [deleteMessage, setdeleteMessage] = useState('');
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   useEffect(() => {
     const fetchAddressData = async () => {
@@ -94,6 +95,8 @@ const PlaceOrder = () => {
         country: '',
         phone: '',
       });
+      setIsButtonDisabled(true);
+      setErrors({});
     } else {
       const selectedAddress = addressList.find((address) => address.id === addressId);
 
@@ -114,9 +117,8 @@ const PlaceOrder = () => {
         });
 
         const isValid = validateFormData(selectedAddress);
-        if (isValid) {
-          setErrors({});
-        }
+        setErrors({});
+        setIsButtonDisabled(!isValid);
       }
     }
   };
@@ -125,7 +127,6 @@ const PlaceOrder = () => {
     const requiredFields = ['fullName', 'type', 'no', 'street', 'city', 'state', 'zipCode', 'country', 'number'];
     return requiredFields.every((field) => data[field] && data[field].toString().trim() !== '');
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -205,8 +206,12 @@ const PlaceOrder = () => {
   const handleSaveOrUpdate = () => {
     if (validateForm()) {
       saveDefaultAddress();
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
     }
   };
+
 
   const confirmDeleteAddress = (id) => {
     setShowConfirmationPopup(true);
@@ -402,7 +407,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button type='button' onClick={() => createRazorPayOrder(getTotalCartAmount() + 5)} >PROCEED TO PAYMENT</button>
+          <button type='button' onClick={() => createRazorPayOrder((getTotalCartAmount() + 5), cartItems)} disabled={isButtonDisabled} className={isButtonDisabled ? 'button-disabled' : ''} >  PROCEED TO PAYMENT </button>
         </div>
       </div>
     </form>

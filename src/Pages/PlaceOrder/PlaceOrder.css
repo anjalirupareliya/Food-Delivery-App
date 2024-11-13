@@ -249,7 +249,7 @@ select {
 }
 
 .confirmation-popup .popup-content button.confirm-button {
-    background-color: red;
+    background-color: tomato;
     color: white;
 }
 
@@ -258,7 +258,7 @@ select {
 }
 
 .confirmation-popup .popup-content button.cancel-button {
-    background-color: lightcoral;
+    background-color: gray;
     color: white;
 }
 
@@ -302,4 +302,10 @@ select {
     display: flex;
     justify-content: center;
     gap: 20px;
+}
+
+.button-disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    color: white;
 }

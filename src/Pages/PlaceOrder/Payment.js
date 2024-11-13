@@ -2,10 +2,10 @@ import { BASE_URL, RAZORPAY_KEY_ID } from "../../constants/apiconstants";
 
 
 // load script for razorpay
-export const loadScript = () => {
+export const loadScript = (url) => {
     return new Promise((resolve, reject) => {
         const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.src = url;
         script.onload = () => resolve(true);
         script.onerror = () => reject(false);
         document.body.appendChild(script);
@@ -14,7 +14,7 @@ export const loadScript = () => {
 
 
 // Take all data and pass the data in backend
-export const createRazorPayOrder = async (amount) => {
+export const createRazorPayOrder = async (amount, cartItems) => {
     const data = {
         amount: amount * 100,
         currency: "INR",
@@ -35,7 +35,7 @@ export const createRazorPayOrder = async (amount) => {
 
         const responseData = await response.json();
 
-        handleRazorpayScreen(responseData.order_id, amount);
+        handleRazorpayScreen(responseData.order_id, amount, cartItems);
     } catch (error) {
         console.error("Error during payment order creation:", error);
     }
@@ -43,7 +43,7 @@ export const createRazorPayOrder = async (amount) => {
 
 
 // Opens the payment screen and send data in backend
-const handleRazorpayScreen = async (order_id, amount) => {
+const handleRazorpayScreen = async (order_id, amount, cartItems) => {
     try {
         const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
@@ -56,15 +56,30 @@ const handleRazorpayScreen = async (order_id, amount) => {
             key: RAZORPAY_KEY_ID,
             amount: amount * 100,
             currency: 'INR',
+            cartItems: cartItems,
             name: 'Tomato',
             description: 'Payment to Tomato',
             order_id,
             handler: async function (response) {
+                const razorpayData = {
+                    payment_id: response.razorpay_payment_id,
+                    order_id: response.razorpay_order_id,
+                    signature: response.razorpay_signature,
+                    cartItems,  // Pass cartItems here
+                };
                 await fetch(`${BASE_URL}/payment`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(response),
-                });
+                    body: JSON.stringify(razorpayData),
+                }).then(response => response.json())
+                    .then(response => {
+                        if (response.status) {
+
+                        } else {
+
+                        }
+                    })
+                    .catch(err => 'Payment error: ' + console.error(err));
             },
             theme: {
                 color: "#ff6347",
