@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import './Order.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { StoreContext } from '../../Components/Context/Storecontext';
 
 const Order = ({ userName }) => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { setCartItems } = useContext(StoreContext);
+    const invoiceId = searchParams.get('invoiceId');
+
+    useEffect(() => {
+        setCartItems({});
+    }, [setCartItems]);
+    // }, []);
+
     return (
         <div className="thank-you-container">
             <div className="thank-you-card">
@@ -16,7 +26,7 @@ const Order = ({ userName }) => {
                 <p className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
                 <div className="button-group">
-                    <button onClick={() => navigate('/invoice')} className="view-order-button">
+                    <button onClick={() => navigate(`/invoice/${invoiceId}`)} className="view-order-button">
                         View Order
                     </button>
                     <button onClick={() => navigate('/')} className="continue-shopping-button">

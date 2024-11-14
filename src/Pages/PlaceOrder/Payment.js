@@ -71,7 +71,7 @@ const handleRazorpayScreen = async (order_id, amount, cartItems) => {
                 }).then(response => response.json())
                     .then(response => {
                         if (response.status) {
-                            window.location.href = "/confirm?invoiceId=" + response.invoiceId;
+                            window.location.href = `/confirm?invoiceId=${response.invoiceId}`;
                         } else {
                             alert("Payment verification failed. Please try again.");
                         }

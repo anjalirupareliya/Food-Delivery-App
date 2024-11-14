@@ -11,7 +11,6 @@ const Exploremenu = ({ category, setCategory }) => {
     useEffect(() => {
         axios.get(API_BASE_URL + '/category')
             .then((res) => {
-                // console.log(res.data);
                 if (res.data.status) {
                     setMenuList(res.data.data);
                 }

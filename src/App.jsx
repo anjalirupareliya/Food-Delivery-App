@@ -44,7 +44,7 @@ const App = () => {
           <Route path='/cart' element={<Cart userName={userName} setShowLogin={setShowLogin} />} />
           <Route path='/order' element={<PlaceOrder />} />
           <Route path='/confirm' element={<Order userName={userName} />} />
-          <Route path='/invoice' element={<Invoice />} />
+          <Route path="/invoice/:id" element={<Invoice />} />
         </Routes>
       </div>
       <Footer />
