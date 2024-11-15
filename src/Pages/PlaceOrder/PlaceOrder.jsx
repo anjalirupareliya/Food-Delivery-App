@@ -407,7 +407,7 @@ const PlaceOrder = () => {
             <p>Total</p>
             <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</p>
           </div>
-          <button type='button' onClick={() => createRazorPayOrder((getTotalCartAmount() + 5), cartItems)} disabled={isButtonDisabled} className={isButtonDisabled ? 'button-disabled' : ''} >  PROCEED TO PAYMENT </button>
+          <button type='button' onClick={() => createRazorPayOrder((getTotalCartAmount() + 5), cartItems, selectedAddressId)} disabled={isButtonDisabled} className={isButtonDisabled ? 'button-disabled' : ''} > PROCEED TO PAYMENT </button>
         </div>
       </div>
     </form>

@@ -12,7 +12,7 @@ export const loadScript = (url) => {
 };
 
 // Take all data and pass the data in backend
-export const createRazorPayOrder = async (amount, cartItems) => {
+export const createRazorPayOrder = async (amount, cartItems, addressId) => {
     const data = {
         amount: amount * 100,
         currency: "INR",
@@ -33,14 +33,14 @@ export const createRazorPayOrder = async (amount, cartItems) => {
 
         const responseData = await response.json();
 
-        handleRazorpayScreen(responseData.order_id, amount, cartItems);
+        handleRazorpayScreen(responseData.order_id, amount, cartItems, addressId);
     } catch (error) {
         console.error("Error during payment order creation:", error);
     }
 };
 
 // Opens the payment screen and sends data to backend
-const handleRazorpayScreen = async (order_id, amount, cartItems) => {
+const handleRazorpayScreen = async (order_id, amount, cartItems, addressId) => {
     try {
         const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
@@ -63,6 +63,7 @@ const handleRazorpayScreen = async (order_id, amount, cartItems) => {
                     order_id: response.razorpay_order_id,
                     signature: response.razorpay_signature,
                     cartItems,  // Pass cartItems here
+                    address_id: addressId,
                 };
                 await fetch(`${BASE_URL}/payment`, {
                     method: "POST",

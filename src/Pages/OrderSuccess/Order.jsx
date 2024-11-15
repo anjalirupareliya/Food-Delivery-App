@@ -12,7 +12,6 @@ const Order = ({ userName }) => {
     useEffect(() => {
         setCartItems({});
     }, [setCartItems]);
-    // }, []);
 
     return (
         <div className="thank-you-container">

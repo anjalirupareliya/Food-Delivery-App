@@ -1,0 +1,103 @@
+.invoice-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+}
+
+.invoice-card {
+    background-color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 700px;
+    width: 100%;
+}
+
+.invoice-card ul,
+.table-container {
+    padding: 40px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.Icon1 {
+    color: white;
+    background-color: tomato;
+    padding: 33px;
+    margin-bottom: 30px;
+    font-size: 25px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 370px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+li strong {
+    color: #555;
+    font-weight: bold;
+}
+
+.status-icon {
+    color: white;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: left;
+    font-size: 14px;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background: #f1f1f1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+th {
+    font-weight: bold;
+    color: #555;
+}
+
+td {
+    font-weight: normal;
+}
+
+.item-image {
+    padding: 5px;
+    width: 70px;
+}
+
+.payment-success {
+    background-color: #d4edda;
+    color: green;
+    border: 1px solid #c3e6cb;
+    width: 70px;
+    height: 26px;
+}
+
+.payment-failure {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    width: 70px;
+    height: 26px;
+}
