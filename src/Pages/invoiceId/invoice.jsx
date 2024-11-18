@@ -23,7 +23,6 @@ const Invoice = () => {
             try {
                 axios.get(API_BASE_URL + `/invoice/${id}`, config)
                     .then((res) => {
-                        debugger
                         if (res.status) {
                             setInvoice(res.data.invoice);
                             setInvoiceDetails(res.data.invoice.invoiceDetails);
@@ -41,6 +40,8 @@ const Invoice = () => {
     }, [id]);
 
 
+
+
     const subtotal = invoiceDetails.reduce(
         (sum, item) => sum + item.price * item.qty,
         0
@@ -54,40 +55,39 @@ const Invoice = () => {
     return (
         <div className="invoice-container">
             <div className="invoice-card">
-                <h1 className="Icon1">Your Order <span className="status-icon">✔</span>  </h1>
+                <h1 className="Icon1">Order Invoice</h1>
                 {paymentStatus !== null && (
                     <p className={paymentStatus ? 'payment-success' : 'payment-failure'}>
                         {paymentStatus ? 'Success' : 'Failed'}
                     </p>)}
+                <ul className='Date'>
+                    <li className='order OrderDate'>
+                        <strong>Order Date:</strong>{' '}
+                        {invoice.order_date && (() => {
+                            const date = new Date(invoice.order_date);
+
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const year = String(date.getFullYear()).slice(-2);
+
+                            const hours = date.getHours();
+                            const minutes = String(date.getMinutes()).padStart(2, '0');
+                            const ampm = hours >= 12 ? 'PM' : 'AM';
+                            const hour12 = hours % 12 || 12;
+
+                            return `${day}/${month}/${year} ${hour12}:${minutes} ${ampm}`;
+                        })()}
+                    </li>
+                    <li className='order InvoiceID'><strong>Invoice ID: </strong>#{invoice.id}</li>
+                </ul>
                 {error && <p className="error1">{error}</p>}
+                <div className="address-container">
+                    <h2>Shipping Address</h2>
+                    <p>
+                        {address ? Object.values(address).filter(value => value).join('') : 'Address not available'}  </p>
+                </div>
                 {invoice && (
                     <>
-                        <ul>
-                            <li>
-                                <strong>Order Date:</strong>{' '}
-                                {invoice.order_date && (() => {
-                                    const date = new Date(invoice.order_date);
-                                    const time = date.toLocaleTimeString('en-US', {
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        second: 'numeric',
-                                        hour12: true,
-                                    });
-                                    const formattedDate = `${date.getDate()} ${date.toLocaleString('en-US', { month: 'short' })}, ${date.getFullYear()}`;
-                                    return `${time} at ${formattedDate}`;
-                                })()}
-                            </li>
-                            <li ><strong>Invoice ID:</strong>#{invoice.id}</li>
-                        </ul>
-                        {address && (
-                            <div className="address-container">
-                                <h2>Shipping Address</h2>
-                                <p><strong>{address.name}</strong></p>
-                                <p>{address.street}</p>
-                                <p>{address.city}, {address.state} {address.zip}</p>
-                                <p>{address.country}</p>
-                            </div>
-                        )}
                         <div className="table-container">
                             <table className="invoice-table">
                                 <thead>
@@ -101,7 +101,7 @@ const Invoice = () => {
                                 <tbody>
                                     {invoiceDetails.map((item, index) => (
                                         <tr key={index}>
-                                            <td style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
+                                            <td className="img-contanier">
                                                 <img src={item.product.image} alt={item.product.name} className="item-image" />
                                                 <p>{item.product.name}</p>
                                             </td>
@@ -113,17 +113,32 @@ const Invoice = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <ul>
-                            <li style={{ marginTop: "-30px" }}><strong>Sub Total:</strong> ${subtotal.toFixed(2)}</li>
-                            <li><strong>Delivery Fee:</strong> ${deliveryFee.toFixed(2)}</li>
-                            <li><strong>Discount:</strong> ${discount.toFixed(2)}</li>
-                            <li><strong>Total Amount:</strong> ${totalAmount.toFixed(2)}</li>
-                        </ul>
+                        <div className="payment-summary-container">
+                            <div className="payment-box">
+                                <p className="lead">Payment Methods:</p>
+                                <div className="payment-icons">
+                                    <img className='payment' src="https://w7.pngwing.com/pngs/667/172/png-transparent-logo-brand-visa-font-visa-blue-text-trademark-thumbnail.png" alt="Visa" />
+                                    <img className='payment' src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/MasterCard-Logo.svg/2560px-MasterCard-Logo.svg.png" alt="Mastercard" />
+                                    <img className='payment' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKXPN5n9zXmWG6mjYxilOMCu9lK8A74gqv3g&s" alt="American Express" />
+                                    <img className='payment' src="https://icon2.cleanpng.com/20180810/ywr/d524e77dd45f2e6cbd2f72103119b8bf.webp" alt="Paypal" />
+                                </div>
+                                <p className="payment-description">
+                                    Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
+                                    plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                                </p>
+                            </div>
+                            <ul className='AllTotal'>
+                                <li className="order1 Subtotal"><strong>Sub Total:</strong> ${subtotal.toFixed(2)}</li>
+                                <li className="order1"><strong>Delivery Fee:</strong> ${deliveryFee.toFixed(2)}</li>
+                                <li className="order1"><strong>Discount:</strong> ${discount.toFixed(2)}</li>
+                                <li className="order1 Total"><strong>Total Amount:</strong> ${totalAmount.toFixed(2)}</li>
+                            </ul>
+                        </div>
                     </>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 
-export default Invoice;  
+export default Invoice;

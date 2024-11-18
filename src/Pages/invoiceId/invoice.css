@@ -3,101 +3,201 @@
     justify-content: center;
     align-items: center;
     margin-top: 150px;
+    padding: 20px;
 }
 
 .invoice-card {
-    background-color: white;
+    background-color: #fff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    border-radius: 8px;
     max-width: 700px;
     width: 100%;
-}
-
-.invoice-card ul,
-.table-container {
-    padding: 40px;
-}
-
-.table-container {
-    overflow-x: auto;
+    padding: 20px;
 }
 
 .Icon1 {
-    color: white;
+    color: #fff;
     background-color: tomato;
-    padding: 33px;
-    margin-bottom: 30px;
-    font-size: 25px;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.address-container,
+.table-container,
+.payment-box {
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.payment-box,
+.address-container {
+    background-color: #f9f9f9;
+}
+
+.address-container h2,
+.payment-box .lead {
+    margin-bottom: 10px;
+    font-size: 17px;
+    color: #333;
+}
+
+.address-container p {
+    font-size: 14px;
+    color: #555;
+}
+
+.address-container {
+    margin-left: 19px;
+    margin-right: 19px;
 }
 
 ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-li {
+.Date {
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+li.order {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-left: 370px;
-    margin-bottom: 10px;
     font-size: 14px;
     color: #333;
+    margin-bottom: 8px;
+    margin-right: 23px;
+    margin-left: 443px;
 }
 
-li strong {
+li.order1 {
+    display: flex;
+    justify-content: space-between;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+li.order strong {
     color: #555;
-    font-weight: bold;
-}
-
-.status-icon {
-    color: white;
 }
 
 .invoice-table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
-th,
-td {
-    text-align: left;
+.invoice-table th,
+.invoice-table td {
+    padding: 12px;
+    text-align: center;
     font-size: 14px;
-    padding: 8px;
     border-bottom: 1px solid #ddd;
 }
 
-tr:hover {
-    background: #f1f1f1;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-th {
-    font-weight: bold;
+.invoice-table th {
+    background-color: #f1f1f1;
     color: #555;
+    font-weight: bold;
 }
 
-td {
-    font-weight: normal;
+.invoice-table tr:hover {
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+.img-contanier {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .item-image {
-    padding: 5px;
-    width: 70px;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+.payment-success,
+.payment-failure {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-top: 10px;
 }
 
 .payment-success {
-    background-color: #d4edda;
-    color: green;
-    border: 1px solid #c3e6cb;
-    width: 70px;
-    height: 26px;
+    color: #fff;
+    background-color: #28a745;
+    margin-left: 23px;
 }
 
 .payment-failure {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-    width: 70px;
-    height: 26px;
+    color: #fff;
+    background-color: red;
+    margin-left: 23px;
+}
+
+.AllTotal {
+    list-style-type: none;
+}
+
+.OrderDate {
+    margin-top: -41px;
+}
+
+.payment-box,
+.AllTotal {
+    margin: 20px 0;
+}
+
+.payment-summary-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-left: 19px;
+}
+
+.payment-box {
+    width: 48%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.AllTotal {
+    width: 48%;
+    padding: 20px;
+    font-size: 14px;
+}
+
+.payment-icons {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.payment-icons img {
+    width: 40px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.Total {
+    margin-top: 16px;
+}
+
+.payment-description {
+    font-size: smaller;
+    color: #333;
 }

@@ -183,6 +183,22 @@ const PlaceOrder = () => {
 
       if (response.data.status) {
         setSuccessMessage(response.data.message);
+        setAddressList((prevList) => [
+          ...prevList,
+          {
+            id: response.data.address.id,
+            fullName: `${firstName} ${lastName}`,
+            no,
+            street,
+            city,
+            state,
+            zipCode: zip,
+            country,
+            number: phone,
+            isDefault: true,
+          },
+        ]);
+        setSelectedAddressId(response.data.address.id);
       } else {
         setErrorMessage(response.data.message);
       }
@@ -414,4 +430,4 @@ const PlaceOrder = () => {
   );
 };
 
-export default PlaceOrder;
+export default PlaceOrder; 
