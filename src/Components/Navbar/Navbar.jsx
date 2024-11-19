@@ -77,7 +77,7 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
                 ) : (
                   <BiSolidUser className="user-icon" />
                 )}
-                <p>{userName}</p>
+                <Link to="/profile"><p>{userName}</p></Link>
                 <button onClick={onLogout}>Logout</button>
               </div>
             ) : (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './invoice.css';
 import axios from 'axios';
@@ -38,9 +38,6 @@ const Invoice = () => {
         };
         fetchInvoices();
     }, [id]);
-
-
-
 
     const subtotal = invoiceDetails.reduce(
         (sum, item) => sum + item.price * item.qty,
