@@ -88,7 +88,6 @@ const Profile = () => {
             }
         } catch (error) {
             setMessage({ text: "An error occurred. Please try again.", type: "error" });
-            console.error("Error updating profile:", error);
         }
     };
 
@@ -97,26 +96,30 @@ const Profile = () => {
     return (
         <div className="profile-container">
             <div className="profile-left">
-                <div className="address-section">
-                    <h2>Select an Address:</h2>
-                    <ul>
-                        {addresses.map((address) => (
-                            <li key={address.id}>
-                                <div>
-                                    <input type="radio" name="selectedAddress" value={address.id} />
-                                    {address.fullName}, {address.street}, {address.city}, {address.state}, {address.zipCode}, {address.country}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
                 <div className="invoice-section">
-                    <h2>Invoices</h2>
-                    <ul>
-                        {invoices.map((invoice) => (
-                            <li key={invoice.id}>Invoice #{invoice.id}</li>
-                        ))}
-                    </ul>
+                    <h2>Invoices:</h2>
+                    {invoices.length > 0 ? (
+                        <table className="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Order Date</th>
+                                    <th>Total Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {invoices.map((invoice) => (
+                                    <tr key={invoice.id}>
+                                        <td>{new Date(invoice.order_date).toLocaleString()}</td>
+                                        <td>${invoice.total_amount.toFixed(2)}</td>
+                                        <td>{invoice.status ? "Paid" : "Unpaid"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No invoices available.</p>
+                    )}
                 </div>
             </div>
             <div className="profile-right">
@@ -129,24 +132,41 @@ const Profile = () => {
                 )}
                 <div className="profile-card">
                     <form method="post" className="profile-form" onSubmit={handleFormSubmit}>
-                        <div className="form-group">
+                        <div>
                             <label>Full Name</label>
                             <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} />
                         </div>
-                        <div className="form-group">
+                        <div>
                             <label>Email</label>
                             <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
                         </div>
-                        <div className="form-group">
+                        <div>
                             <label>Profile Image</label>
+                            {formData.image && (
+                                <img src={formData.image instanceof File ? URL.createObjectURL(formData.image) : formData.image} className="profile-image" />
+                            )}
                             <input type="file" accept="image/*" onChange={handleImageChange} />
                         </div>
+
                         <button type="submit">Update Profile</button>
                     </form>
+                </div>
+                <div className="address-section">
+                    <h2>Addresses:</h2>
+                    <ul>
+                        {addresses.map((address) => (
+                            <li key={address.id}>
+                                <div>
+                                    <input type="radio" name="selectedAddress" value={address.id} />
+                                    {address.fullName}, {address.street}, {address.city}, {address.state}, {address.zipCode}, {address.country}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </div>
     );
 };
 
-export default Profile;
+export default Profile; 
