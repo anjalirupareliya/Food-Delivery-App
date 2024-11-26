@@ -73,7 +73,8 @@ const Navbar = ({ setShowLogin, userName, onLogout }) => {
             {userName ? (
               <div className="user-info">
                 {Image ? (
-                  <img src={Image} alt="User" className="user-icon user-image" />
+                  <Link to="/profile">
+                    <img src={Image} alt="User" className="user-icon user-image" /></Link>
                 ) : (
                   <BiSolidUser className="user-icon" />
                 )}
