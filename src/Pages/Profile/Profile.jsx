@@ -4,21 +4,18 @@ import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { assets } from '../../assets/assets';
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
 const Profile = () => {
     const navigate = useNavigate();
-    const [userData, setUserData] = useState({});
-    const [addresses, setAddresses] = useState([]);
     const [invoices, setInvoices] = useState([]);
     const [formData1, setFormData1] = useState({
         fullName: "",
         email: "",
         image: "",
     });
+
     const [message, setMessage] = useState({ text: "", type: "" });
-    const [selectedInvoice, setSelectedInvoice] = useState(null);
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [addressList, setAddressList] = useState([]);
     const [formData, setFormData] = useState({
         id: '',
@@ -32,12 +29,20 @@ const Profile = () => {
         number: '',
         type: '',
     });
+
     const [errors, setErrors] = useState({});
-    const [selectedAddressId, setSelectedAddressId] = useState('');
+    const [selectedAddressId, setSelectedAddressId] = useState('new_address');
     const [successMessage, setSuccessMessage] = useState('');
+    const [successMessage1, setSuccessMessage1] = useState('');
+    const [errorMessage1, setErrorMessage1] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
     const [addressToDelete, setAddressToDelete] = useState(null);
+    const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
+    const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: "" });
+    const [popupMessage, setPopupMessage] = useState({ text: "", type: "" });
+    const [globalMessage, setGlobalMessage] = useState({ text: "", type: "" });
+
     const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
     const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
     const cities = {
@@ -65,9 +70,7 @@ const Profile = () => {
             try {
                 const response = await axios.get(`${API_BASE_URL}/me`, config);
                 if (response.data.status) {
-                    const { user, addresses, invoices } = response.data;
-                    setUserData(user);
-                    setAddresses(addresses || []);
+                    const { user, invoices } = response.data;
                     setInvoices(invoices || []);
                     setFormData1({
                         fullName: user.fullName || "",
@@ -84,7 +87,7 @@ const Profile = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        // setFormData1((prev) => ({ ...prev, [name]: value }));
+        setFormData1((prev) => ({ ...prev, [name]: value }));
         setFormData({ ...formData, [name]: value });
         setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
     };
@@ -98,7 +101,6 @@ const Profile = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
         const token = localStorage.getItem("token");
         const config = {
             headers: {
@@ -115,9 +117,9 @@ const Profile = () => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/editProfile/${userData.id}`, formDataObj, config);
+            const response = await axios.post(`${API_BASE_URL}/editProfile`, formDataObj, config);
             if (response.data.status) {
-                setUserData(response.data.user);
+                debugger
                 setFormData1({
                     fullName: response.data.user.fullName,
                     email: response.data.user.email,
@@ -128,15 +130,20 @@ const Profile = () => {
                 setMessage({ text: response.data.message, type: "error" });
             }
         } catch (error) {
+            console.error("Error updating profile:", error);
             setMessage({ text: "An error occurred. Please try again.", type: "error" });
         }
     };
+
 
     const handleViewInvoice = (invoiceId) => {
         navigate(`/invoice/${invoiceId}`);
     };
 
-    const clearMessage = () => setMessage({});
+    const clearMessage = () => {
+        setMessage({});
+        setPopupMessage({});
+    };
 
     useEffect(() => {
         const fetchAddressData = async () => {
@@ -152,13 +159,11 @@ const Profile = () => {
                 console.error('Error fetching address data:', error);
             }
         };
-
         fetchAddressData();
     }, []);
 
     const handleAddressChange = (addressId) => {
         setSelectedAddressId(addressId);
-
         if (addressId === "new_address") {
             setFormData({
                 id: '',
@@ -193,7 +198,6 @@ const Profile = () => {
                     country: selectedAddress.country || '',
                     phone: selectedAddress.number || '',
                 });
-
                 setErrors({});
             }
         }
@@ -221,10 +225,9 @@ const Profile = () => {
     const saveDefaultAddress = async () => {
         const { firstName, lastName, no, street, city, state, zip, country, phone, type } = formData;
         const id = selectedAddressId !== "new_address" ? selectedAddressId : null;
-
         try {
-            setErrorMessage('');
-            setSuccessMessage('');
+            setErrorMessage1('');
+            setSuccessMessage1('');
             const token = localStorage.getItem("token");
 
             const response = await axios.post(`${API_BASE_URL}/address`, {
@@ -244,30 +247,32 @@ const Profile = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
             if (response.data.status) {
-                setSuccessMessage(response.data.message);
-                setAddressList((prevList) => [
-                    ...prevList,
-                    {
-                        id: response.data.address.id,
-                        fullName: `${firstName} ${lastName}`,
-                        no,
-                        street,
-                        city,
-                        state,
-                        zipCode: zip,
-                        country,
-                        number: phone,
-                        isDefault: true,
-                    },
-                ]);
+                setSuccessMessage1(response.data.message);
+
+                const updatedAddress = {
+                    id: response.data.address.id,
+                    fullName: `${firstName} ${lastName}`,
+                    no,
+                    street,
+                    city,
+                    state,
+                    zipCode: zip,
+                    country,
+                    number: phone,
+                    isDefault: true,
+                };
+                if (id) {
+                    setAddressList((prevList) => prevList.map((address) => address.id === id ? updatedAddress : address));
+                } else {
+                    setAddressList((prevList) => [...prevList, updatedAddress]);
+                }
                 setSelectedAddressId(response.data.address.id);
             } else {
-                setErrorMessage(response.data.message);
+                setErrorMessage1(response.data.message);
             }
         } catch (error) {
-            setErrorMessage('An error occurred while updating the address.');
+            setErrorMessage1('An error occurred while updating the address.');
         }
     };
 
@@ -281,10 +286,9 @@ const Profile = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
                 if (response.data.status) {
                     setAddressList(addressList.filter((address) => address.id !== addressToDelete));
-                    setdeleteMessage("Address successfully deleted.");
+                    setSuccessMessage("Address successfully deleted.");
                     if (selectedAddressId === addressToDelete) {
                         handleAddressChange("new_address");
                     }
@@ -304,10 +308,12 @@ const Profile = () => {
     };
 
     const handleclearMessage = () => {
+        setSuccessMessage1('');
         setSuccessMessage('');
     };
 
     const handleerrorMessage = () => {
+        setErrorMessage1('');
         setErrorMessage('');
     }
 
@@ -320,6 +326,38 @@ const Profile = () => {
         setShowConfirmationPopup(false);
         setAddressToDelete(null);
     };
+    const handlePasswordChange = (e) => {
+        console.log("Name:", e.target.name);
+        console.log("Value:", e.target.value);
+        setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+    };
+
+    const handleChangePasswordSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        try {
+            const response = await axios.post(`${API_BASE_URL}/changePassword`, passwordData, config);
+            debugger
+            const result = response.data;
+            if (result.status) {
+                setGlobalMessage({ text: result.message, type: "success" });
+                setShowChangePasswordPopup(false);
+                setPasswordData({ password: "", confirmPassword: "" });
+            } else {
+                setPopupMessage({ text: result.message, type: "error" });
+            }
+        } catch (error) {
+            setPopupMessage({
+                text: "An error occurred while processing your request. Please try again.",
+                type: "error",
+            });
+        }
+    };
 
     return (
         <div className="profile-container">
@@ -327,8 +365,18 @@ const Profile = () => {
                 <h1>Addresses</h1>
                 <div className="address-list">
                     <p className="title2">Select a delivery address</p>
-                    {successMessage && <div className="success-message">{successMessage}</div>}
-                    {errorMessage && <div className="error-message">{errorMessage}</div>}
+                    {successMessage && (
+                        <div className='success-container'>
+                            <p className='success-message'>{successMessage}</p>
+                            <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleclearMessage} />
+                        </div>
+                    )}
+                    {errorMessage && (
+                        <div className='error-container'>
+                            <p className='error-message1'>{errorMessage}</p>
+                            <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleerrorMessage} />
+                        </div>
+                    )}
                     {addressList.map((address) => (
                         <div>
                             <div key={address.id} className="radio-container1">
@@ -352,36 +400,36 @@ const Profile = () => {
                 </div>
 
                 <p className='title3'>Delivery Information</p>
-                {successMessage && (
+                {successMessage1 && (
                     <div className='success-container'>
-                        <p className='success-message'>{successMessage}</p>
+                        <p className='success-message'>{successMessage1}</p>
                         <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleclearMessage} />
                     </div>
                 )}
-
-                {errorMessage && (
+                {errorMessage1 && (
                     <div className='error-container'>
-                        <p className='error-message1'>{errorMessage}</p>
+                        <p className='error-message1'>{errorMessage1}</p>
                         <img src={assets.cross_icon} alt="Close" className="close-img" onClick={handleerrorMessage} />
                     </div>
                 )}
+
                 <div className='multi-fields1'>
                     <div className='form-group1 w100'>
-                        <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleAddressChange} />
+                        <input type='text' name='firstName' placeholder='First name' value={formData.firstName} onChange={handleInputChange} />
                         {errors.firstName && <span className='error-message'>{errors.firstName}</span>}
                     </div>
 
                     <div className='form-group1 w100'>
-                        <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleAddressChange} />
+                        <input type='text' name='lastName' placeholder='Last name' value={formData.lastName} onChange={handleInputChange} />
                         {errors.lastName && <span className='error-message'>{errors.lastName}</span>}
                     </div>
                 </div>
                 <div className='form-group1'>
-                    <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleAddressChange} />
+                    <input className='gk' type='text' name='phone' placeholder='Phone' pattern="[1-9]{1}[0-9]{9}" title="Enter 10 digit mobile number" value={formData.phone} onChange={handleInputChange} />
                     {errors.phone && <span className='error-message'>{errors.phone}</span>}
                 </div>
                 <div className='form-group1'>
-                    <select id="type" name="type" value={formData.type} onChange={handleAddressChange}>
+                    <select id="type" name="type" value={formData.type} onChange={handleInputChange}>
                         <option value="type">Select Type</option>
                         <option value="Home">Home</option>
                         <option value="Work">Work</option>
@@ -389,17 +437,17 @@ const Profile = () => {
                     </select>
                 </div>
                 <div className='form-group1'>
-                    <input className='gk' type='text' name='no' placeholder='House no.' value={formData.no} onChange={handleAddressChange} />
+                    <input className='gk' type='text' name='no' placeholder='House no.' value={formData.no} onChange={handleInputChange} />
                     {errors.no && <span className='error-message'>{errors.no}</span>}
                 </div>
                 <div className='form-group1'>
-                    <input className='gk' type='text' name='street' placeholder='Enter Your Street' value={formData.street} onChange={handleAddressChange} />
+                    <input className='gk' type='text' name='street' placeholder='Enter Your Street' value={formData.street} onChange={handleInputChange} />
                     {errors.street && <span className='error-message'>{errors.street}</span>}
                 </div>
 
                 <div className='multi-fields1'>
                     <div className='form-group1 w100'>
-                        <select className='gk' name='city' value={formData.city} onChange={handleAddressChange}>
+                        <select className='gk' name='city' value={formData.city} onChange={handleInputChange}>
                             <option value=''>Select City</option>
                             {formData.state && cities[formData.state]?.map((city, index) => (
                                 <option key={index} value={city}>{city}</option>
@@ -408,7 +456,7 @@ const Profile = () => {
                         {errors.city && <span className='error-message'>{errors.city}</span>}
                     </div>
                     <div className='form-group1 w100'>
-                        <select className='gk' name='state' value={formData.state} onChange={handleAddressChange}>
+                        <select className='gk' name='state' value={formData.state} onChange={handleInputChange}>
                             <option value=''>Select State</option>
                             {states.map((state, index) => (
                                 <option key={index} value={state}>{state}</option>
@@ -420,12 +468,12 @@ const Profile = () => {
 
                 <div className='multi-fields1'>
                     <div className='form-group1 w100'>
-                        <input className='gk' type='text' name='zip' placeholder='Zip' value={formData.zip} onChange={handleAddressChange} />
+                        <input className='gk' type='text' name='zip' placeholder='Zip' value={formData.zip} onChange={handleInputChange} />
                         {errors.zip && <span className='error-message'>{errors.zip}</span>}
                     </div>
 
                     <div className='form-group1 w100'>
-                        <select className='gk' name='country' value={formData.country} onChange={handleAddressChange}>
+                        <select className='gk' name='country' value={formData.country} onChange={handleInputChange}>
                             <option value=''>Select Country</option>
                             {countrys.map((country, index) => (
                                 <option key={index} value={country}>{country}</option>
@@ -474,13 +522,43 @@ const Profile = () => {
                         <div>
                             <label>Profile Image</label>
                             {formData1.image && (
-                                <img src={formData1.image instanceof File ? URL.createObjectURL(formData1.image) : formData1.image} className="profile-image" />
+                                <img src={formData1.image instanceof File ? URL.createObjectURL(formData1.image) :
+                                    `${API_BASE_URL}${formData1.image}`} className="profile-image" alt="Profile" />
                             )}
                             <input type="file" accept="image/*" onChange={handleImageChange} />
                         </div>
-                        <button type="submit">Update Profile</button>
+                        <div>
+                            <button type="submit">Update Profile</button>
+                            <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupMessage({ text: "", type: "" }); }}  >   Change Password   </button>
+                        </div>
                     </form>
                 </div>
+                {showChangePasswordPopup && (
+                    <div className="popup-overlay">
+                        <div className="popup-content">
+                            <div className="popup-header">
+                                <h2>Change Password</h2>
+                                <button className="close-button1" onClick={() => setShowChangePasswordPopup(false)}>×</button>
+                            </div>
+                            {popupMessage.text && (
+                                <div className={`message ${popupMessage.type}`}>{popupMessage.text}
+                                    <button className="close-icon2" onClick={clearMessage}>×</button>
+                                </div>
+                            )}
+                            <form onSubmit={handleChangePasswordSubmit}>
+                                <div>
+                                    <label>Password:</label>
+                                    <input type="password" name="password" value={passwordData.password} onChange={handlePasswordChange} />
+                                </div>
+                                <div>
+                                    <label>Confirm Password:</label>
+                                    <input type="password" name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange} />
+                                </div>
+                                <button className="Change" type="submit">Change</button>
+                            </form>
+                        </div>
+                    </div>
+                )}
                 <div className="invoice-section">
                     <h1 style={{ marginTop: "50px" }}>Invoices</h1>
                     {invoices.length > 0 ? (
@@ -514,18 +592,6 @@ const Profile = () => {
                         <p>No invoices available.</p>
                     )}
                 </div>
-                {isPopupVisible && selectedInvoice && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <button className="close-popup" onClick={() => setIsPopupVisible(false)}>X</button>
-                            <h2>Invoice Details</h2>
-                            <p><strong>Address:</strong> {selectedInvoice.address}</p>
-                            <p><strong>Order Date:</strong> {new Date(selectedInvoice.order_date).toLocaleString()}</p>
-                            <p><strong>Total Amount:</strong> ${selectedInvoice.total_amount.toFixed(2)}</p>
-                        </div>
-                    </div>
-                )}
-
             </div>
         </div >
     );

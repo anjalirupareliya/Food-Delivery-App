@@ -183,21 +183,29 @@ const PlaceOrder = () => {
 
       if (response.data.status) {
         setSuccessMessage(response.data.message);
-        setAddressList((prevList) => [
-          ...prevList,
-          {
-            id: response.data.address.id,
-            fullName: `${firstName} ${lastName}`,
-            no,
-            street,
-            city,
-            state,
-            zipCode: zip,
-            country,
-            number: phone,
-            isDefault: true,
-          },
-        ]);
+
+        const updatedAddress = {
+          id: response.data.address.id,
+          fullName: `${firstName} ${lastName}`,
+          no,
+          street,
+          city,
+          state,
+          zipCode: zip,
+          country,
+          number: phone,
+          isDefault: true,
+        };
+        if (id) {
+          setAddressList((prevList) =>
+            prevList.map((address) =>
+              address.id === id ? updatedAddress : address
+            )
+          );
+        } else {
+          setAddressList((prevList) => [...prevList, updatedAddress]);
+        }
+
         setSelectedAddressId(response.data.address.id);
       } else {
         setErrorMessage(response.data.message);
