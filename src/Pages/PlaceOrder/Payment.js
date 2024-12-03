@@ -67,7 +67,7 @@ const handleRazorpayScreen = async (order_id, amount, cartItems, addressId) => {
                 };
                 await fetch(`${BASE_URL}/payment`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
                     body: JSON.stringify(razorpayData),
                 }).then(response => response.json())
                     .then(response => {

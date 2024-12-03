@@ -80,8 +80,11 @@ const Invoice = () => {
                 {error && <p className="error1">{error}</p>}
                 <div className="address-container">
                     <h2>Shipping Address</h2>
-                    <p>
-                        {address ? Object.values(address).filter(value => value).join('') : 'Address not available'}  </p>
+                    <div>
+                        <p className='address'>{address.fullName}</p>
+                        <p className='address'> +91  {address.number}</p>
+                        <p className='add'>{address.address}</p>
+                    </div>
                 </div>
                 {invoice && (
                     <>
@@ -128,7 +131,7 @@ const Invoice = () => {
                                 <li className="order1 Subtotal"><strong>Sub Total:</strong> ${subtotal.toFixed(2)}</li>
                                 <li className="order1"><strong>Delivery Fee:</strong> ${deliveryFee.toFixed(2)}</li>
                                 <li className="order1"><strong>Discount:</strong> ${discount.toFixed(2)}</li>
-                                <li className="order1 Total"><strong>Total Amount:</strong> ${totalAmount.toFixed(2)}</li>
+                                <li className="order1 Total"><strong>Total Amount:</strong> ${invoice.total_amount}</li>
                             </ul>
                         </div>
                     </>

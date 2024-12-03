@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
-import { food_list } from "../../assets/assets";
+import axios from "axios";
+import { API_BASE_URL } from "../../constants/apiconstants";
 
 export const StoreContext = createContext(null);
 
@@ -8,6 +9,18 @@ const StoreContextProvider = (props) => {
         const savedCartItems = localStorage.getItem("cartItems");
         return savedCartItems ? JSON.parse(savedCartItems) : {};
     });
+    const [foodList, setFoodList] = useState([]);
+
+    useEffect(() => {
+        axios.get(API_BASE_URL + '/products')
+            .then((res) => {
+                if (res.data.status) {
+                    setFoodList(res.data.data); 
+                }
+            }).catch(error => {
+                console.error("Failed to fetch products:", error);
+            });
+    }, []);
 
     useEffect(() => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -38,17 +51,23 @@ const StoreContextProvider = (props) => {
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
-        for (const item in cartItems) {
-            if (cartItems[item] > 0) {
-                let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo.price * cartItems[item];
+
+        if (foodList.length > 0 && Object.keys(cartItems).length > 0) {
+            for (const itemId in cartItems) {
+                if (cartItems[itemId] > 0) {
+                    const itemInfo = foodList.find((product) => product.id === parseInt(itemId));
+                    if (itemInfo) {
+                        totalAmount += itemInfo.price * cartItems[itemId]; 
+                    }
+                }
             }
         }
+
         return totalAmount;
     };
 
     const contextValue = {
-        food_list,
+        foodList, 
         cartItems,
         setCartItems,
         addToCart,
@@ -63,4 +82,4 @@ const StoreContextProvider = (props) => {
     );
 };
 
-export default StoreContextProvider;
+export default StoreContextProvider; 

@@ -1,12 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext,useState,useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Components/Context/Storecontext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_BASE_URL } from "../../constants/apiconstants"
 import { AiFillDelete } from "react-icons/ai";
 
 const Cart = ({ setShowLogin }) => {
-  const { food_list, cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const { cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const [food_list, setFoodList] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get(API_BASE_URL + '/products')
+      .then((res) => {
+        if (res.data.status) {
+          setFoodList(res.data.data);
+        }
+      })
+  }, []);
 
   const handleCheckout = () => {
     const token = localStorage.getItem('token');
@@ -33,20 +45,20 @@ const Cart = ({ setShowLogin }) => {
         {
           Object.keys(cartItems).length == 0 ? <div className="cart-items-empty">Card is empty!! Please add item into cart.</div> :
             food_list.map((item) => {
-              if (cartItems[item._id] > 0) {
+              if (cartItems[item.id] > 0) {
                 return (
-                  <div key={item._id}>
+                  <div key={item.id}>
                     <div className='cart-items-title cart-items-item'>
                       <img src={item.image} alt='' />
                       <p>{item.name}</p>
                       <p>${item.price}</p>
                       <div className="quantity-control">
-                        <button onClick={() => removeFromCart(item._id)} className='minus-btn'>-</button>
-                        <span>{cartItems[item._id]}</span>
-                        <button onClick={() => addToCart(item._id)} className='plus-btn'>+</button>
+                        <button onClick={() => removeFromCart(item.id)} className='minus-btn'>-</button>
+                        <span>{cartItems[item.id]}</span>
+                        <button onClick={() => addToCart(item.id)} className='plus-btn'>+</button>
                       </div>
-                      <p>${item.price * cartItems[item._id]}</p>
-                      <AiFillDelete onClick={() => removeFromCart(item._id, true)} className='cross' />
+                      <p>${item.price * cartItems[item.id]}</p>
+                      <AiFillDelete onClick={() => removeFromCart(item.id, true)} className='cross' />
                     </div>
                     <hr />
                   </div>

@@ -119,7 +119,6 @@ const Profile = () => {
         try {
             const response = await axios.post(`${API_BASE_URL}/editProfile`, formDataObj, config);
             if (response.data.status) {
-                debugger
                 setFormData1({
                     fullName: response.data.user.fullName,
                     email: response.data.user.email,
@@ -342,7 +341,6 @@ const Profile = () => {
         };
         try {
             const response = await axios.post(`${API_BASE_URL}/changePassword`, passwordData, config);
-            debugger
             const result = response.data;
             if (result.status) {
                 setGlobalMessage({ text: result.message, type: "success" });
