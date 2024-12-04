@@ -4,7 +4,7 @@ import { assets } from '../../assets/assets';
 import axios from 'axios';
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { eyeOff } from 'react-icons-kit/feather/eyeOff';
-import { Icon } from 'react-icons-kit';
+import { Icon } from 'react-icons-kit';;
 import { eye } from 'react-icons-kit/feather/eye'
 
 const LoginPopup = ({ setShowLogin, setUserName }) => {

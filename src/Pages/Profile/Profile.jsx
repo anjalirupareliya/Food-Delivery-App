@@ -41,7 +41,6 @@ const Profile = () => {
     const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
     const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: "" });
     const [popupMessage, setPopupMessage] = useState({ text: "", type: "" });
-    const [globalMessage, setGlobalMessage] = useState({ text: "", type: "" });
 
     const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
     const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
@@ -343,7 +342,6 @@ const Profile = () => {
             const response = await axios.post(`${API_BASE_URL}/changePassword`, passwordData, config);
             const result = response.data;
             if (result.status) {
-                setGlobalMessage({ text: result.message, type: "success" });
                 setShowChangePasswordPopup(false);
                 setPasswordData({ password: "", confirmPassword: "" });
             } else {

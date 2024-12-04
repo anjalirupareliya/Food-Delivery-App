@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import './Header.css'
+import React, { useState } from 'react';
+import './Header.css';
 
 const Header = () => {
     const [menu, setMenu] = useState('home');
@@ -15,4 +15,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default Header;

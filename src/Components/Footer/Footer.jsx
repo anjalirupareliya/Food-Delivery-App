@@ -1,6 +1,6 @@
-import React from 'react'
-import './Footer.css'
-import { assets } from '../../assets/assets'
+import React from 'react';
+import './Footer.css';
+import { assets } from '../../assets/assets';
 
 const Footer = () => {
     return (
@@ -44,4 +44,4 @@ const Footer = () => {
     )
 }
 
-export default Footer
+export default Footer;

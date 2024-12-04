@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react'
-import './Fooddisplay.css'
-import { StoreContext } from '../Context/Storecontext'
+import React, { useEffect, useState, useContext } from 'react';
+import './Fooddisplay.css';
+import { StoreContext } from '../Context/Storecontext';
 import axios from 'axios';
-import Fooditem from '../FoodItems/Fooditem'
-import { API_BASE_URL } from "../../constants/apiconstants"
+import Fooditem from '../FoodItems/Fooditem';
+import { API_BASE_URL } from "../../constants/apiconstants";
 
 const Fooddisplay = ({ category }) => {
     // const { food_list } = useContext(StoreContext)
@@ -32,4 +32,4 @@ const Fooddisplay = ({ category }) => {
     )
 }
 
-export default Fooddisplay;
+export default Fooddisplay;s

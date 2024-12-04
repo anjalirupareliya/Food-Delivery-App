@@ -8,7 +8,7 @@ import Footer from './Components/Footer/Footer'
 import LoginPopup from './Components/LoginPopup/LoginPopup'
 import Order from './Pages/OrderSuccess/Order'
 import Invoice from './Pages/invoiceId/invoice'
-import Profile from './Pages/Profile/profile'
+import Profile from './Pages/Profile/Profile'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);

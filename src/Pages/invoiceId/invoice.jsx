@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './invoice.css';
 import axios from 'axios';
-import { API_BASE_URL } from "../../constants/apiconstants"
+import { API_BASE_URL } from "../../constants/apiconstants";
 
 const Invoice = () => {
     const [error, setError] = useState(null);
@@ -40,14 +40,12 @@ const Invoice = () => {
     }, [id]);
 
     const subtotal = invoiceDetails.reduce(
-        (sum, item) => sum + item.price * item.qty,
-        0
-    );
+        (sum, item) => sum + item.price * item.qty, 0);
 
     let deliveryFee = 5;
     const discount = 0;
 
-    const totalAmount = subtotal + deliveryFee - discount;
+    // const totalAmount = subtotal + deliveryFee - discount;
 
     return (
         <div className="invoice-container">

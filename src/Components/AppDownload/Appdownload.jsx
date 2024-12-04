@@ -1,6 +1,6 @@
-import React from 'react'
-import './Appdownload.css'
-import { assets } from '../../assets/assets'
+import React from 'react';
+import './Appdownload.css';
+import { assets } from '../../assets/assets';
 
 const Appdownload = () => {
     return (
@@ -14,4 +14,4 @@ const Appdownload = () => {
     )
 }
 
-export default Appdownload
+export default Appdownload;

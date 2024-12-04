@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Exploremenu.css';
 import axios from 'axios';
-import { API_BASE_URL } from "../../constants/apiconstants"
-import { menu_list } from '../../assets/assets';
+import { API_BASE_URL } from "../../constants/apiconstants";
 
 const Exploremenu = ({ category, setCategory }) => {
     const menuListRef = useRef(null);
@@ -16,7 +15,6 @@ const Exploremenu = ({ category, setCategory }) => {
                 }
             })
     }, []);
-
 
     const scrollRight = () => {
         menuListRef.current.scroll({ left: 200, behavior: 'smooth' });
