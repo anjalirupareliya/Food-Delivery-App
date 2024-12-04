@@ -32,4 +32,4 @@ const Fooddisplay = ({ category }) => {
     )
 }
 
-export default Fooddisplay;s
+export default Fooddisplay;
