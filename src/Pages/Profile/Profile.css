@@ -30,7 +30,7 @@
     border-radius: 8px 8px 0 0;
     font-size: 24px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 9px;
 }
 
 .title2 {
@@ -114,8 +114,9 @@
 
 .profile-form label {
     display: block;
+    margin-top: 9px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     color: #555;
 }
 
