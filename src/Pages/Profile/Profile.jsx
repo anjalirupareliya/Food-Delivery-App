@@ -94,9 +94,17 @@ const Profile = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            localStorage.setItem('profileImage', URL.createObjectURL(file));
             setFormData1((prev) => ({ ...prev, image: file }));
         }
     };
+
+    useEffect(() => {
+        const savedImage = localStorage.getItem('profileImage');
+        if (savedImage) {
+            setFormData1((prev) => ({ ...prev, image: savedImage }));
+        }
+    }, []);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -518,14 +526,13 @@ const Profile = () => {
                         <div>
                             <label>Profile Image</label>
                             {formData1.image && (
-                                <img src={formData1.image instanceof File ? URL.createObjectURL(formData1.image) :
-                                    `${API_BASE_URL}${formData1.image}`} className="profile-image" alt="Profile" />
+                                <img src={formData1.image instanceof File ? URL.createObjectURL(formData1.image) : formData1.image} className="profile-image" alt="Profile" />
                             )}
                             <input type="file" accept="image/*" onChange={handleImageChange} />
                         </div>
                         <div>
                             <button type="submit">Update Profile</button>
-                            <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupMessage({ text: "", type: "" }); }}  >   Change Password   </button>
+                            <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupMessage({ text: "", type: "" }); }}>     Change Password </button>
                         </div>
                     </form>
                 </div>
