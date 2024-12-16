@@ -1,19 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from './Components/Navbar/Navbar'
-import { Route, Routes } from 'react-router-dom'
-import Home from './Pages/Home/Home'
-import Cart from './Pages/Cart/Cart'
-import PlaceOrder from './Pages/PlaceOrder/PlaceOrder'
-import Footer from './Components/Footer/Footer'
-import LoginPopup from './Components/LoginPopup/LoginPopup'
-import Order from './Pages/OrderSuccess/Order'
-import Invoice from './Pages/invoiceId/invoice'
-import Profile from './Pages/Profile/Profile'
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import Navbar from './Components/Navbar/Navbar';
+import Home from './Pages/Home/Home';
+import Cart from './Pages/Cart/Cart';
+import PlaceOrder from './Pages/PlaceOrder/PlaceOrder';
+import Footer from './Components/Footer/Footer';
+import LoginPopup from './Components/LoginPopup/LoginPopup';
+import Order from './Pages/OrderSuccess/Order';
+import Invoice from './Pages/invoiceId/invoice';
+import Profile from './Pages/Profile/Profile';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [userName, setUserName] = useState('');
+  const location = useLocation();
+  const { id } = useParams();
 
+  useEffect(() => {
+    const path = location.pathname;
+    let pageTitle = 'Food Delivery';
+
+    if (path === '/cart') {
+      debugger
+      pageTitle = 'Food Delivery - Cart';
+    } else if (path === '/') {
+      pageTitle = 'Food Delivery - Home';
+    } else if (path === '/order') {
+      pageTitle = 'Food Delivery - Place Order';
+    } else if (path === '/confirm') {
+      pageTitle = 'Food Delivery - Order Confirmation';
+    } else if (path === '/profile') {
+      pageTitle = 'Food Delivery - Profile';
+    } else if (path.includes('/invoice')) {
+      pageTitle = `Food Delivery - Invoice ${id ? `#${id}` : ''}`;
+    } else {
+      pageTitle = 'Food Delivery';
+    }
+
+    document.title = pageTitle;
+  }, [location, id]);
   const checkUserAuth = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
@@ -51,7 +76,7 @@ const App = () => {
       </div>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default App;
+export default App; 
