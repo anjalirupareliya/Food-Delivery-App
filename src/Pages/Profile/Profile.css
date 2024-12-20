@@ -318,8 +318,8 @@
 
 .notification {
     position: fixed;
-    top: 93px;
-    right: 3px;
+    top: 20px;
+    right: 20px;
     padding: 10px 20px;
     border-radius: 5px;
     color: white;
@@ -351,5 +351,16 @@
     position: absolute;
     top: 22px;
     right: 13px;
+    cursor: pointer;
+}
+
+.Change {
+    background-color: tomato;
+    width: 100%;
+    border: none;
+    padding: 16px;
+    border-radius: 4px;
+    color: white;
+    font-size: 15px;
     cursor: pointer;
 }

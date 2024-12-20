@@ -353,6 +353,7 @@ const Profile = () => {
             const result = response.data;
 
             if (result.status) {
+                debugger
                 setShowChangePasswordPopup(false);
                 setPasswordData({ password: "", confirmPassword: "" });
                 setPopupErrorMessage("");
@@ -360,7 +361,7 @@ const Profile = () => {
 
                 setTimeout(() => {
                     setNotification({ visible: false, text: "", type: "" });
-                }, 3000);
+                }, 2000);
             } else {
                 setPopupErrorMessage(result.message);
             }
