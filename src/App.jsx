@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import Navbar from './Components/Navbar/Navbar';
 import Home from './Pages/Home/Home';
 import Cart from './Pages/Cart/Cart';
@@ -15,13 +15,13 @@ const App = () => {
   const [userName, setUserName] = useState('');
   const location = useLocation();
   const { id } = useParams();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const path = location.pathname;
     let pageTitle = 'Food Delivery';
 
     if (path === '/cart') {
-      debugger
       pageTitle = 'Food Delivery - Cart';
     } else if (path === '/') {
       pageTitle = 'Food Delivery - Home';
@@ -58,6 +58,7 @@ const App = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUserName('');
+    navigate('/'); 
   };
 
   return (
@@ -79,4 +80,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;

@@ -4,7 +4,7 @@ import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { assets } from '../../assets/assets';
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -38,9 +38,12 @@ const Profile = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
     const [addressToDelete, setAddressToDelete] = useState(null);
-    const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
     const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: "" });
-    const [popupMessage, setPopupMessage] = useState({ text: "", type: "" });
+    const [notification, setNotification] = useState({ visible: false, text: "", type: "" });
+    const [popupErrorMessage, setPopupErrorMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
 
     const countrys = ['Australia', 'Japan', 'Egypt', 'Germany', 'Canada', 'India', 'Brazil', 'France', 'Nepal', 'Malaysia', 'Russia', 'Saudi Arabia', "America", "Spain", "Turkey", "Vietnam"];
     const states = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Punjab', 'Tamil Nadu', 'Goa', 'Bihar', 'Sikkim', 'Rajasthan', 'Kerela'];
@@ -141,14 +144,12 @@ const Profile = () => {
         }
     };
 
-
     const handleViewInvoice = (invoiceId) => {
         navigate(`/invoice/${invoiceId}`);
     };
 
     const clearMessage = () => {
         setMessage({});
-        setPopupMessage({});
     };
 
     useEffect(() => {
@@ -332,34 +333,39 @@ const Profile = () => {
         setShowConfirmationPopup(false);
         setAddressToDelete(null);
     };
+
     const handlePasswordChange = (e) => {
-        console.log("Name:", e.target.name);
-        console.log("Value:", e.target.value);
         setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
     };
 
     const handleChangePasswordSubmit = async (e) => {
         e.preventDefault();
+
         const token = localStorage.getItem("token");
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
+
         try {
             const response = await axios.post(`${API_BASE_URL}/changePassword`, passwordData, config);
             const result = response.data;
+
             if (result.status) {
                 setShowChangePasswordPopup(false);
                 setPasswordData({ password: "", confirmPassword: "" });
+                setPopupErrorMessage("");
+                setNotification({ visible: true, text: result.message, type: "success" });
+
+                setTimeout(() => {
+                    setNotification({ visible: false, text: "", type: "" });
+                }, 3000);
             } else {
-                setPopupMessage({ text: result.message, type: "error" });
+                setPopupErrorMessage(result.message);
             }
         } catch (error) {
-            setPopupMessage({
-                text: "An error occurred while processing your request. Please try again.",
-                type: "error",
-            });
+            setPopupErrorMessage("An error occurred while processing your request. Please try again.");
         }
     };
 
@@ -532,8 +538,10 @@ const Profile = () => {
                         </div>
                         <div>
                             <button type="submit">Update Profile</button>
-                            <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupMessage({ text: "", type: "" }); }}>     Change Password </button>
+                            <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupErrorMessage("") }} > Change Password </button>
                         </div>
+                        {notification.visible && (
+                            <div className={`notification ${notification.type}`}>{notification.text}</div>)}
                     </form>
                 </div>
                 {showChangePasswordPopup && (
@@ -541,21 +549,28 @@ const Profile = () => {
                         <div className="popup-content">
                             <div className="popup-header">
                                 <h2>Change Password</h2>
-                                <button className="close-button1" onClick={() => setShowChangePasswordPopup(false)}>×</button>
+                                <button className="close-button1" onClick={() => setShowChangePasswordPopup(false)}> × </button>
                             </div>
-                            {popupMessage.text && (
-                                <div className={`message ${popupMessage.type}`}>{popupMessage.text}
-                                    <button className="close-icon2" onClick={clearMessage}>×</button>
+                            {popupErrorMessage && (
+                                <div className="error-message2">
+                                    <p>{popupErrorMessage}</p>
+                                    <img className="close-icon6" onClick={() => setPopupErrorMessage("")} src={assets.cross_icon} alt="close" />
                                 </div>
                             )}
                             <form onSubmit={handleChangePasswordSubmit}>
                                 <div>
                                     <label>Password:</label>
-                                    <input type="password" name="password" value={passwordData.password} onChange={handlePasswordChange} />
+                                    <div className="password-input-wrapper">
+                                        <input type={showPassword ? "text1" : "password"} name="password" value={passwordData.password} onChange={handlePasswordChange} />
+                                        <span className="toggle-icon" onClick={() => setShowPassword(!showPassword)}  >{showPassword ? <AiFillEyeInvisible size={20}/> : <AiFillEye size={20}/>}</span>
+                                    </div>
                                 </div>
                                 <div>
                                     <label>Confirm Password:</label>
-                                    <input type="password" name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange} />
+                                    <div className="password-input-wrapper">
+                                        <input type={showConfirmPassword ? "text1" : "password"} name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange} />
+                                        <span className="toggle-icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)}> {showConfirmPassword ? <AiFillEyeInvisible size={20}/> : <AiFillEye size={20}/>}</span>
+                                    </div>
                                 </div>
                                 <button className="Change" type="submit">Change</button>
                             </form>
@@ -592,7 +607,7 @@ const Profile = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <p>No invoices available.</p>
+                        <p style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>No invoices available.</p>
                     )}
                 </div>
             </div>
