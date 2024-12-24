@@ -191,6 +191,7 @@ li.order strong {
 .payment-icons {
     display: flex;
     margin-bottom: 10px;
+    align-items: center;
 }
 
 .payment-icons img {
