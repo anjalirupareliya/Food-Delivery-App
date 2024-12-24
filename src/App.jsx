@@ -55,10 +55,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!userName && location.pathname !== '/') {
+    if (!localStorage.getItem('user')) {
       navigate('/');
     }
-  }, [userName, location, navigate]);
+  }, [userName, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
