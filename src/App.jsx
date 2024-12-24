@@ -58,7 +58,7 @@ const App = () => {
     if (!localStorage.getItem('user')) {
       navigate('/');
     }
-  }, [userName, navigate]);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
