@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './Components/Navbar/Navbar';
 import Home from './Pages/Home/Home';
 import Cart from './Pages/Cart/Cart';
@@ -15,6 +15,7 @@ const App = () => {
   const [userName, setUserName] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     const path = location.pathname;
@@ -37,7 +38,7 @@ const App = () => {
     }
 
     document.title = pageTitle;
-  }, [location]);
+  }, [location, id]);
 
   const checkUserAuth = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -55,10 +56,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!localStorage.getItem('user')) {
+    if (!userName && location.pathname === '/profile') {
       navigate('/');
     }
-  }, [navigate]);
+  }, [userName, location.pathname, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');

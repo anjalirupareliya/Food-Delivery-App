@@ -364,3 +364,8 @@
     font-size: 15px;
     cursor: pointer;
 }
+
+.profile-image-icon {
+    margin-bottom: 8px;
+    margin-top: 8px;
+}

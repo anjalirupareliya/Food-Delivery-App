@@ -4,6 +4,7 @@ import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../constants/apiconstants";
 import { assets } from '../../assets/assets';
+import { BiSolidUser } from "react-icons/bi";
 import { AiFillDelete, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Profile = () => {
@@ -532,16 +533,19 @@ const Profile = () => {
                         </div>
                         <div>
                             <label>Profile Image</label>
-                            {formData1.image && (
+                            {formData1.image ? (
                                 <img src={formData1.image instanceof File ? URL.createObjectURL(formData1.image) : formData1.image} className="profile-image" alt="Profile" />
+                            ) : (
+                                <BiSolidUser size={22} className="profile-image-icon" />
                             )}
                             <input type="file" accept="image/*" onChange={handleImageChange} />
                         </div>
+
                         <div>
                             <button type="submit">Update Profile</button>
                             <button type="button" className="changePass" onClick={() => { setShowChangePasswordPopup(true); setPopupErrorMessage("") }} > Change Password </button>
                         </div>
-                        {notification.visible && (
+                        {notification.visible && (  
                             <div className={`notification ${notification.type}`}>{notification.text}</div>)}
                     </form>
                 </div>
@@ -563,14 +567,14 @@ const Profile = () => {
                                     <label>Password:</label>
                                     <div className="password-input-wrapper">
                                         <input type={showPassword ? "text1" : "password"} name="password" value={passwordData.password} onChange={handlePasswordChange} />
-                                        <span className="toggle-icon" onClick={() => setShowPassword(!showPassword)}  >{showPassword ? <AiFillEyeInvisible size={20}/> : <AiFillEye size={20}/>}</span>
+                                        <span className="toggle-icon" onClick={() => setShowPassword(!showPassword)}  >{showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label>Confirm Password:</label>
                                     <div className="password-input-wrapper">
                                         <input type={showConfirmPassword ? "text1" : "password"} name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange} />
-                                        <span className="toggle-icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)}> {showConfirmPassword ? <AiFillEyeInvisible size={20}/> : <AiFillEye size={20}/>}</span>
+                                        <span className="toggle-icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)}> {showConfirmPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}</span>
                                     </div>
                                 </div>
                                 <button className="Change" type="submit">Change</button>
