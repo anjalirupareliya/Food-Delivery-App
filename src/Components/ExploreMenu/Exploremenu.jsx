@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './Exploremenu.css';
+import './ExploreMenu.css';
 import axios from 'axios';
 import { API_BASE_URL } from "../../constants/apiconstants";
 
