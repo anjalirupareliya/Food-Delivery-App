@@ -149,9 +149,9 @@ const LoginPopup = ({ setShowLogin, setUserName }) => {
             axios.post(API_BASE_URL + '/register', payload)
                 .then(response => {
                     if (response.data.status) {
+                        setCurrState('Login');
                         setErrors({ type: 'success', message: response.data.message });
                     } else {
-                        setCurrState('Login');
                         setErrors({ type: 'error', message1: response.data.message[0].msg });
                     }
                 });
