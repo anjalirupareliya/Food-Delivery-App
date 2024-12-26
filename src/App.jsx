@@ -74,7 +74,7 @@ const App = () => {
       <div className='App'>
         <Navbar setShowLogin={setShowLogin} userName={userName} onLogout={handleLogout} />
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/Food-Delivery-App' element={<Home />} />
           <Route path='/cart' element={<Cart userName={userName} setShowLogin={setShowLogin} />} />
           <Route path='/order' element={<PlaceOrder />} />
           <Route path='/confirm' element={<Order userName={userName} />} />
